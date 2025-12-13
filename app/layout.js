@@ -1,5 +1,5 @@
 import './globals.css'
-import Providers from './providers'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata = {
   title: 'InsureInfra — Embedded Insurance Orchestration',
@@ -11,7 +11,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        {children}
+        <Toaster />
       </body>
     </html>
   )
