@@ -101,3 +101,62 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Replace homepage with provided InsureInfra landing page style; use inline SVG mockup images; add email capture form that stores leads in MongoDB."
+
+backend:
+  - task: "Email capture API (POST /api/leads + GET /api/leads)"
+    implemented: true
+    working: true
+    file: "app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implemented /api/leads POST (email, source, createdAt, uuid id) and /api/leads GET (latest 50). Ensured response does not include Mongo _id. Verified via curl POST/GET locally."
+
+frontend:
+  - task: "Landing page UI at / with inline SVG mockups"
+    implemented: true
+    working: true
+    file: "app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Replaced homepage with provided design and added inline SVG mockups. Captured screenshot locally and it renders correctly."
+
+  - task: "Email capture form wiring (frontend -> /api/leads)"
+    implemented: true
+    working: true
+    file: "app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added form in final CTA section. Submits to /api/leads, shows success/error state, clears email on success."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Landing page UI at / with inline SVG mockups"
+    - "Email capture form wiring (frontend -> /api/leads)"
+    - "Email capture API (POST /api/leads + GET /api/leads)"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Homepage replaced with InsureInfra landing page (inline SVG mockups). Added email capture form and /api/leads endpoint storing to MongoDB. Please test UI submission and verify lead persisted via GET /api/leads."
