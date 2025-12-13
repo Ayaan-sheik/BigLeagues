@@ -150,10 +150,7 @@ export default function StartupsPage() {
           <h1 className="text-3xl font-bold text-[#37322F] mb-2">Startup Management</h1>
           <p className="text-gray-600">Manage your startup relationships and policies</p>
         </div>
-        <Button className="bg-[#37322F] hover:bg-[#2a2521]">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Startup
-        </Button>
+        <AddStartupDialog onSuccess={fetchStartups} />
       </div>
 
       {/* Filters */}
