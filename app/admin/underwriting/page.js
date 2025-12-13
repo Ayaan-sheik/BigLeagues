@@ -208,6 +208,20 @@ export default function UnderwritingPage() {
                                   </div>
                                 )}
 
+                                {app.recommendedPremium && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-600">Rec. Premium:</span>
+                                    <span className="text-xs font-semibold text-blue-600">₹{app.recommendedPremium}</span>
+                                  </div>
+                                )}
+
+                                {app.actualPremium && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-600">Premium:</span>
+                                    <span className="text-xs font-bold text-green-600">₹{app.actualPremium}</span>
+                                  </div>
+                                )}
+
                                 <div className="text-xs text-gray-400 pt-1 border-t truncate">
                                   {app.applicationNumber}
                                 </div>
