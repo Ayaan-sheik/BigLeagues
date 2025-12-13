@@ -29,7 +29,7 @@ export default withAuth(
       
       // If profile completed, go to dashboard
       if (role === 'admin') {
-        return NextResponse.redirect(new URL('/admin1/dashboard', req.url))
+        return NextResponse.redirect(new URL('/admin', req.url))
       } else {
         return NextResponse.redirect(new URL('/customer1/dashboard', req.url))
       }
