@@ -84,7 +84,7 @@ export async function POST(request) {
 
 export async function PUT(request) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     
     if (!session || session.user.role !== 'customer') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
