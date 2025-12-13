@@ -1,16 +1,15 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Next.js MongoDB Template',
-  description: 'A simple template with App Router, MongoDB, and shadcn/ui',
+  title: 'InsureInfra — Embedded Insurance Orchestration',
+  description:
+    'Protect your startup from product failures, founder risk, and warranty losses — with per-transaction premium recovery.',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
