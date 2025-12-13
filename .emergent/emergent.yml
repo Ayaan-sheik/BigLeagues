@@ -1,3 +1,5 @@
 {
-  "env_image_name": "nextjs_mongo_shadcn_base_image_cloud_arm:release-12122025-1"
+  "env_image_name": "nextjs_mongo_shadcn_base_image_cloud_arm:release-12122025-1",
+  "job_id": "f301009d-1e36-4855-83b4-2d2211319a16",
+  "created_at": "2025-12-13T20:40:20.224088+00:00Z"
 }
