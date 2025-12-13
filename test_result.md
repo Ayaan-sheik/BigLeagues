@@ -228,22 +228,24 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 1
+  version: "2.0"
+  test_sequence: 2
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "User registration flow with auto-login"
+    - "Login flow with credentials"
+    - "Protected route access (dashboard)"
+    - "Route protection middleware"
+    - "Password strength validation"
+    - "Form validation and error handling"
+    - "Liquid glass morphism UI design"
+    - "Session management and logout"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
-    message: "Homepage replaced with InsureInfra landing page (inline SVG mockups). Added email capture form and /api/leads endpoint storing to MongoDB. Please test UI submission and verify lead persisted via GET /api/leads."
-  - agent: "testing"
-    message: "✅ COMPREHENSIVE UI TESTING COMPLETED SUCCESSFULLY. All high-priority tasks are working perfectly: (1) Landing page loads without errors with all 7 sections visible, (2) Sticky navigation scrolls correctly to all target sections (Risks→#problem, Mechanism→#how-it-works, Coverage→#coverage, Request Access→#request-access), (3) Email capture form submits successfully, shows success message, clears input, and persists data to MongoDB, (4) API endpoints /api/leads POST and GET working correctly. Found 2 SVG mockups as expected. No console errors detected. Ready for production."
-  - agent: "main"
-    message: "Made small UI edits: Removed extra MockupSVG from Developer section and removed entire Differentiation section (Compliance now immediately follows Coverage). Please re-test homepage to verify edits."
-  - agent: "testing"
-    message: "✅ UI EDITS VERIFICATION COMPLETED: All requested changes successfully implemented and tested. (1) Page loads without console errors, (2) Developer section structure perfect (left text + right code block, NO extra MockupSVG), (3) Section order confirmed: Coverage → Compliance (Differentiation section correctly removed), (4) Sticky navigation works perfectly for all targets. Homepage ready for production."
+    message: "Built complete authentication system for InsureInfra with NextAuth.js, Google OAuth (placeholder), email/password auth, password reset flow, and liquid glass morphism UI. Includes login/register pages, protected dashboard, middleware for route protection, and comprehensive auth utilities with MongoDB integration. Please test all authentication flows comprehensively."
