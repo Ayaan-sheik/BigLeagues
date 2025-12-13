@@ -132,18 +132,13 @@ export default function AdminOnboarding() {
         if (data.profile) {
           // Pre-fill form with saved data
           setFormData(data.profile)
-          
-          // Resume from saved step (fetch from user's onboardingStep)
-          const userRes = await fetch('/api/auth/session')
-          if (userRes.ok) {
-            const userData = await userRes.json()
-            // Set to next step after last saved
-            const savedStep = userData.user?.onboardingStep || 0
-            if (savedStep > 0 && savedStep < 5) {
-              setCurrentStep(savedStep + 1)
-            }
-          }
         }
+      }
+      
+      // Resume from saved step using session data
+      const savedStep = session?.user?.onboardingStep || 0
+      if (savedStep > 0 && savedStep < 5) {
+        setCurrentStep(savedStep + 1) // Resume at next step
       }
     } catch (error) {
       console.error('Failed to fetch saved profile:', error)
