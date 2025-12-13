@@ -72,11 +72,22 @@ const handler = NextAuth({
       return true
     },
     
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       if (user) {
         token.id = user.id
         token.role = user.role
+        token.profileCompleted = user.profileCompleted || false
       }
+      
+      // Refresh profile status from database if needed
+      if (trigger === 'update') {
+        const { getUserById } = await import('@/lib/auth')
+        const dbUser = await getUserById(token.id)
+        if (dbUser) {
+          token.profileCompleted = dbUser.profileCompleted || false
+        }
+      }
+      
       return token
     },
     
