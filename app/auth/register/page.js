@@ -98,7 +98,12 @@ export default function RegisterPage() {
         setError('Account created but login failed. Please try logging in.')
         setTimeout(() => router.push('/auth/login'), 2000)
       } else {
-        router.push('/dashboard')
+        // Redirect to appropriate onboarding based on role
+        if (role === 'admin') {
+          router.push('/admin/onboarding')
+        } else {
+          router.push('/customer/onboarding')
+        }
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
