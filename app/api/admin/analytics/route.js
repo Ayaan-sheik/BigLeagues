@@ -63,22 +63,28 @@ export async function GET(request) {
     // Claims by Product
     const claimProductMap = {};
     claims.forEach((c) => {
-      claimProductMap[c.productName] = (claimProductMap[c.productName] || 0) + 1;
+      const productName = c.productName || 'Unknown';
+      claimProductMap[productName] = (claimProductMap[productName] || 0) + 1;
     });
 
     const claimsByProduct = Object.keys(claimProductMap).map((product) => ({
-      product,
+      product: product.length > 20 ? product.substring(0, 20) + '...' : product,
       count: claimProductMap[product],
     }));
+
+    // If no claims, return empty array instead of empty object
+    if (claimsByProduct.length === 0) {
+      claimsByProduct.push({ product: 'No Claims', count: 0 });
+    }
 
     return NextResponse.json({
       totalPremium,
       avgPremium,
       lossRatio,
       conversionRate,
-      premiumTrend,
-      policyDistribution,
-      topStartups,
+      premiumTrend: premiumTrend.length > 0 ? premiumTrend : [{ date: 'No Data', premium: 0 }],
+      policyDistribution: policyDistribution.length > 0 ? policyDistribution : [{ name: 'No Policies', count: 0 }],
+      topStartups: topStartups.length > 0 ? topStartups : [{ name: 'No Startups', premium: 0 }],
       claimsByProduct,
     });
   } catch (error) {
