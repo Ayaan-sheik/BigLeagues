@@ -65,6 +65,22 @@ export default function ClaimsPage() {
     }
   }
 
+  async function handleWithdrawClaim(claimId) {
+    if (!confirm('Are you sure you want to withdraw this claim? This action cannot be undone.')) {
+      return
+    }
+    
+    try {
+      const res = await fetch(`/api/customer/claims/${claimId}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) throw new Error('Failed to withdraw claim')
+      fetchClaims()
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
   if (loading) {
     return (
       <div className="space-y-6">
