@@ -298,9 +298,19 @@ export default function StartupsPage() {
                               <Eye className="h-4 w-4 mr-2" />
                               View Details
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
+                            <DropdownMenuItem onClick={(e) => e.stopPropagation()} asChild>
+                              <div>
+                                <EditStartupDialog 
+                                  startup={startup} 
+                                  onSuccess={fetchStartups}
+                                  trigger={
+                                    <div className="flex items-center w-full cursor-pointer">
+                                      <Edit className="h-4 w-4 mr-2" />
+                                      Edit
+                                    </div>
+                                  }
+                                />
+                              </div>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={(e) => e.stopPropagation()} className="text-red-600">
