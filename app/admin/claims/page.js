@@ -189,6 +189,7 @@ export default function ClaimsPage() {
                 <SelectItem value="approved">Approved</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="disputed">Disputed</SelectItem>
               </SelectContent>
             </Select>
           </div>
