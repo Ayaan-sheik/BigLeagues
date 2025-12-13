@@ -125,14 +125,16 @@ export default function CustomerDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{kpi.value}</div>
-              <p className="text-xs text-muted-foreground flex items-center mt-1">
-                {kpi.trend === 'up' && <ArrowUp className="h-3 w-3 text-green-600 mr-1" />}
-                {kpi.trend === 'down' && <ArrowDown className="h-3 w-3 text-red-600 mr-1" />}
-                <span className={kpi.trend === 'up' ? 'text-green-600' : kpi.trend === 'down' ? 'text-red-600' : 'text-gray-600'}>
-                  {kpi.change}
-                </span>
-                <span className="ml-1">from last month</span>
-              </p>
+              {kpi.change && (
+                <p className="text-xs text-muted-foreground flex items-center mt-1">
+                  {kpi.trend === 'up' && <ArrowUp className="h-3 w-3 text-green-600 mr-1" />}
+                  {kpi.trend === 'down' && <ArrowDown className="h-3 w-3 text-red-600 mr-1" />}
+                  <span className={kpi.trend === 'up' ? 'text-green-600' : kpi.trend === 'down' ? 'text-red-600' : 'text-gray-600'}>
+                    {kpi.change}
+                  </span>
+                  <span className="ml-1">from last month</span>
+                </p>
+              )}
             </CardContent>
           </Card>
         ))}
