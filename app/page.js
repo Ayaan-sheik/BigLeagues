@@ -244,7 +244,7 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   type="button"
-                  onClick={() => scrollToId('request-access')}
+                  onClick={() => router.push('/auth/login')}
                   className="px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-black transition flex items-center gap-2 justify-center"
                 >
                   Start Integration <ArrowRight className="w-4 h-4" />
