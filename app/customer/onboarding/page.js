@@ -130,8 +130,24 @@ export default function AdminOnboarding() {
       if (res.ok) {
         const data = await res.json()
         if (data.profile) {
-          // Pre-fill form with saved data
-          setFormData(data.profile)
+          // Deep merge saved data with initial formData structure
+          const savedData = data.profile
+          setFormData(prev => ({
+            ...prev,
+            companyName: savedData.companyName || prev.companyName,
+            companyType: savedData.companyType || prev.companyType,
+            registrationNumber: savedData.registrationNumber || prev.registrationNumber,
+            yearsInBusiness: savedData.yearsInBusiness || prev.yearsInBusiness,
+            companyAddress: savedData.companyAddress || prev.companyAddress,
+            irdaiLicense: savedData.irdaiLicense || prev.irdaiLicense,
+            productsOffered: savedData.productsOffered || prev.productsOffered,
+            targetSegments: savedData.targetSegments || prev.targetSegments,
+            estimatedPremiumVolume: savedData.estimatedPremiumVolume || prev.estimatedPremiumVolume,
+            authorizedSignatory: savedData.authorizedSignatory || prev.authorizedSignatory,
+            contactDetails: savedData.contactDetails || prev.contactDetails,
+            bankDetails: savedData.bankDetails || prev.bankDetails,
+            documents: savedData.documents || prev.documents,
+          }))
         }
       }
       
