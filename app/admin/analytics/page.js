@@ -190,7 +190,14 @@ export default function AnalyticsPage() {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analytics?.claimsByProduct || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="product" stroke="#6b7280" fontSize={12} />
+                <XAxis 
+                  dataKey="product" 
+                  stroke="#6b7280" 
+                  fontSize={11} 
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
                 <YAxis stroke="#6b7280" fontSize={12} />
                 <Tooltip />
                 <Bar dataKey="count" fill="#f59e0b" />
