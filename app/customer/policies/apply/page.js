@@ -199,15 +199,9 @@ export default function ApplyForPolicyPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-sm text-gray-600">{product.description}</p>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-gray-500">Base Price</p>
-                        <p className="font-semibold">₹{product.basePrice}/10k</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500">Coverage Range</p>
-                        <p className="font-semibold">₹{(product.coverageMin/100000).toFixed(1)}L - ₹{(product.coverageMax/100000).toFixed(1)}L</p>
-                      </div>
+                    <div className="text-sm">
+                      <p className="text-gray-500">Coverage Range</p>
+                      <p className="font-semibold text-lg">₹{(product.coverageMin/100000).toFixed(1)}L - ₹{(product.coverageMax/100000).toFixed(1)}L</p>
                     </div>
                     <Button 
                       onClick={() => handleProductSelect(product)}
