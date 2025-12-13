@@ -41,6 +41,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import AddStartupDialog from './components/AddStartupDialog'
+import EditStartupDialog from './components/EditStartupDialog'
 
 const statusColors = {
   active: 'bg-green-100 text-green-700 border-green-200',
