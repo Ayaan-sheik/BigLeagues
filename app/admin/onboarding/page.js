@@ -114,10 +114,41 @@ export default function AdminOnboarding() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/auth/login')
-    } else if (status === 'authenticated' && session?.user?.role !== 'admin') {
-      router.push('/customer/onboarding')
+    } else if (status === 'authenticated') {
+      if (session?.user?.role !== 'admin') {
+        router.push('/customer/onboarding')
+      } else {
+        // Fetch saved profile data and resume
+        fetchSavedProfile()
+      }
     }
   }, [status, session, router])
+
+  const fetchSavedProfile = async () => {
+    try {
+      const res = await fetch('/api/admin/profile')
+      if (res.ok) {
+        const data = await res.json()
+        if (data.profile) {
+          // Pre-fill form with saved data
+          setFormData(data.profile)
+          
+          // Resume from saved step (fetch from user's onboardingStep)
+          const userRes = await fetch('/api/auth/session')
+          if (userRes.ok) {
+            const userData = await userRes.json()
+            // Set to next step after last saved
+            const savedStep = userData.user?.onboardingStep || 0
+            if (savedStep > 0 && savedStep < 5) {
+              setCurrentStep(savedStep + 1)
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch saved profile:', error)
+    }
+  }
 
   // Auto-save function
   const autoSave = async (step, data) => {
