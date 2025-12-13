@@ -60,9 +60,9 @@ export async function GET(request) {
       premium: s.totalPremiumMTD || 0,
     }));
 
-    // Claims by Product
+    // Claims by Product - use all claims for better visualization
     const claimProductMap = {};
-    claims.forEach((c) => {
+    allClaims.forEach((c) => {
       const productName = c.productName || 'Unknown';
       claimProductMap[productName] = (claimProductMap[productName] || 0) + 1;
     });
