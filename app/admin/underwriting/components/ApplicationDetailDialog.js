@@ -90,6 +90,7 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
       toast({
         title: 'Success',
         description: 'Risk score updated successfully',
+        variant: 'default', // Added variant explicitly for success
       })
 
       setEditingRisk(false)
@@ -120,40 +121,42 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Company Info */}
+          {/* Company Info - Changed to Flexbox */}
           <div className="space-y-3">
             <h3 className="font-semibold text-gray-900">Company Information</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[200px]">
                 <p className="text-sm text-gray-600">Company Name</p>
                 <p className="text-sm font-medium">{application.companyName}</p>
               </div>
-              <div>
+              <div className="flex-1 min-w-[200px]">
                 <p className="text-sm text-gray-600">Industry</p>
                 <p className="text-sm font-medium">{application.industry}</p>
               </div>
-              <div>
+              <div className="flex-1 min-w-[200px]">
                 <p className="text-sm text-gray-600">Founder</p>
                 <p className="text-sm font-medium">{application.founderName}</p>
               </div>
-              <div>
+              <div className="flex-1 min-w-[200px]">
                 <p className="text-sm text-gray-600">Email</p>
-                <p className="text-sm font-medium text-blue-600">{application.founderEmail}</p>
+                <p className="text-sm font-medium text-blue-600 truncate" title={application.founderEmail}>
+                  {application.founderEmail}
+                </p>
               </div>
             </div>
           </div>
 
           <Separator />
 
-          {/* Coverage Details */}
+          {/* Coverage Details - Changed to Flexbox for KPI fitting */}
           <div className="space-y-3">
             <h3 className="font-semibold text-gray-900">Requested Coverage</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+            <div className="flex flex-wrap items-center gap-6">
+              <div className="flex-1 min-w-[200px]">
                 <p className="text-sm text-gray-600">Coverage Type</p>
                 <p className="text-sm font-medium">{application.requestedCoverage}</p>
               </div>
-              <div>
+              <div className="flex-none">
                 <p className="text-sm text-gray-600">Coverage Amount</p>
                 <p className="text-lg font-bold text-[#37322F]">
                   ₹{(application.coverageAmount / 100000).toFixed(1)}L
@@ -258,7 +261,7 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
           </div>
         </div>
 
-        <DialogFooter className="flex gap-2">
+        <DialogFooter className="flex gap-2 flex-wrap">
           {!editingRisk && (application.status === 'new' || application.status === 'under_review') && (
             <>
               <Button
