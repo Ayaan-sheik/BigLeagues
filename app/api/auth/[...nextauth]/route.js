@@ -77,6 +77,7 @@ const handler = NextAuth({
         token.id = user.id
         token.role = user.role
         token.profileCompleted = user.profileCompleted || false
+        token.onboardingStep = user.onboardingStep || 0
       }
       
       // Refresh profile status from database if needed
@@ -85,6 +86,7 @@ const handler = NextAuth({
         const dbUser = await getUserById(token.id)
         if (dbUser) {
           token.profileCompleted = dbUser.profileCompleted || false
+          token.onboardingStep = dbUser.onboardingStep || 0
         }
       }
       
