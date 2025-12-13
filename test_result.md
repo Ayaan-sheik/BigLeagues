@@ -111,11 +111,14 @@ backend:
     file: "app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Implemented /api/leads POST (email, source, createdAt, uuid id) and /api/leads GET (latest 50). Ensured response does not include Mongo _id. Verified via curl POST/GET locally."
+      - working: true
+        agent: "testing"
+        comment: "✅ API endpoints tested successfully. POST /api/leads accepts email submissions and returns proper response. GET /api/leads returns JSON array of stored leads. Test emails found in API response confirming data persistence."
 
 frontend:
   - task: "Landing page UI at / with inline SVG mockups"
@@ -124,11 +127,14 @@ frontend:
     file: "app/app/page.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Replaced homepage with provided design and added inline SVG mockups. Captured screenshot locally and it renders correctly."
+      - working: true
+        agent: "testing"
+        comment: "✅ Landing page UI fully functional. All 7 sections (hero, problem, solution, how-it-works, developers, coverage, request-access) render correctly. Found 2 SVG mockup illustrations as expected. Page loads without console errors. Sticky navigation works perfectly."
 
   - task: "Email capture form wiring (frontend -> /api/leads)"
     implemented: true
@@ -136,11 +142,14 @@ frontend:
     file: "app/app/page.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Added form in final CTA section. Submits to /api/leads, shows success/error state, clears email on success."
+      - working: true
+        agent: "testing"
+        comment: "✅ Email capture form working perfectly. Form accepts email input, submits to /api/leads successfully, displays success message 'Thanks — we will reach out shortly.', and clears input field after submission. Full integration between frontend and backend confirmed."
 
 metadata:
   created_by: "main_agent"
