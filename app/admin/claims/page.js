@@ -84,6 +84,7 @@ export default function ClaimsPage() {
     approved: 'bg-green-50 text-green-700 border-green-200',
     paid: 'bg-green-100 text-green-800 border-green-300',
     rejected: 'bg-red-50 text-red-700 border-red-200',
+    disputed: 'bg-orange-50 text-orange-700 border-orange-200',
   }
 
   const priorityColors = {
