@@ -243,7 +243,7 @@ export default function AdminOnboarding() {
             <div className="flex items-center gap-4">
               <h1 className="text-xl font-bold text-gray-900">InsureInfra</h1>
               <span className="text-gray-400">|</span>
-              <span className="text-sm text-gray-600">Admin Onboarding</span>
+              <span className="text-sm text-gray-600">Customer Onboarding</span>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right hidden sm:block">
