@@ -152,7 +152,7 @@ export default function AdminOnboarding() {
       const response = await fetch('/api/onboarding/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step, data, role: 'admin' })
+        body: JSON.stringify({ step, data, role: 'customer' })
       })
       
       if (response.ok) {
