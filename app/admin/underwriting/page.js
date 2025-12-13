@@ -1,9 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ClipboardCheck, Plus, Eye, Check, X, MessageCircle } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { ClipboardCheck, Eye, GripVertical } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -12,6 +11,7 @@ import ApplicationDetailDialog from './components/ApplicationDetailDialog'
 export default function UnderwritingPage() {
   const [loading, setLoading] = useState(true)
   const [applications, setApplications] = useState([])
+  const [draggedItem, setDraggedItem] = useState(null)
 
   useEffect(() => {
     fetchApplications()
@@ -50,6 +50,37 @@ export default function UnderwritingPage() {
     return 'bg-red-50 text-red-700 border-red-200'
   }
 
+  async function handleDrop(e, targetStatus) {
+    e.preventDefault()
+    if (!draggedItem || draggedItem.status === targetStatus) return
+
+    try {
+      const res = await fetch(`/api/admin/applications/${draggedItem.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: targetStatus }),
+      })
+
+      if (res.ok) {
+        fetchApplications()
+      }
+    } catch (err) {
+      console.error(err)
+    }
+
+    setDraggedItem(null)
+  }
+
+  function handleDragStart(e, app) {
+    setDraggedItem(app)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -69,13 +100,7 @@ export default function UnderwritingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-[#37322F] mb-2">Underwriting Workflow</h1>
-          <p className="text-gray-600">Review and approve startup applications</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <MessageCircle className="h-4 w-4 mr-2" />
-            Risk Rules
-          </Button>
+          <p className="text-gray-600">Review and approve startup applications - Drag & drop to change status</p>
         </div>
       </div>
 
@@ -121,69 +146,81 @@ export default function UnderwritingPage() {
         </Card>
       </div>
 
-      {/* Kanban Board */}
+      {/* Kanban Board - Vertical Scrollable */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-5">
         {columns.map((column) => {
           const columnApps = getApplicationsByStatus(column.id)
           return (
-            <Card key={column.id} className="border-gray-200">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center justify-between">
-                  <span>{column.title}</span>
-                  <Badge variant="outline" className="ml-2">
-                    {columnApps.length}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-2">
-                <ScrollArea className="h-[600px]">
-                  <div className="space-y-2 px-2">
-                    {columnApps.length === 0 ? (
-                      <div className="text-center py-8 text-gray-400 text-sm">No applications</div>
-                    ) : (
-                      columnApps.map((app) => (
-                        <Card
-                          key={app.id}
-                          className="border hover:shadow-md transition-shadow cursor-pointer"
-                        >
-                          <CardContent className="p-3 space-y-2">
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <p className="text-sm font-semibold text-gray-900 line-clamp-1">
-                                  {app.companyName}
-                                </p>
-                                <p className="text-xs text-gray-500 mt-1">{app.industry}</p>
-                              </div>
-                              <ApplicationDetailDialog application={app} onSuccess={fetchApplications} />
-                            </div>
+            <div
+              key={column.id}
+              onDrop={(e) => handleDrop(e, column.id)}
+              onDragOver={handleDragOver}
+              className="h-full"
+            >
+              <Card className="border-gray-200 h-full">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium flex items-center justify-between">
+                    <span>{column.title}</span>
+                    <Badge variant="outline" className="ml-2">
+                      {columnApps.length}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-2">
+                  <ScrollArea className="h-[600px]">
+                    <div className="space-y-2 px-2">
+                      {columnApps.length === 0 ? (
+                        <div className="text-center py-8 text-gray-400 text-sm">No applications</div>
+                      ) : (
+                        columnApps.map((app) => (
+                          <div
+                            key={app.id}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, app)}
+                            className="cursor-move"
+                          >
+                            <Card className="border hover:shadow-md transition-shadow">
+                              <CardContent className="p-3 space-y-2">
+                                <div className="flex items-start justify-between gap-2">
+                                  <GripVertical className="h-4 w-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold text-gray-900 truncate">
+                                      {app.companyName}
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1">{app.industry}</p>
+                                  </div>
+                                  <ApplicationDetailDialog application={app} onSuccess={fetchApplications} />
+                                </div>
 
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-600">Coverage:</span>
-                              <span className="text-xs font-medium">
-                                ₹{(app.coverageAmount / 100000).toFixed(1)}L
-                              </span>
-                            </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-gray-600">Coverage:</span>
+                                  <span className="text-xs font-medium">
+                                    ₹{(app.coverageAmount / 100000).toFixed(1)}L
+                                  </span>
+                                </div>
 
-                            {app.riskScore !== null && (
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-600">Risk:</span>
-                                <Badge variant="outline" className={getRiskScoreColor(app.riskScore)}>
-                                  {app.riskScore}
-                                </Badge>
-                              </div>
-                            )}
+                                {app.riskScore !== null && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-600">Risk:</span>
+                                    <Badge variant="outline" className={getRiskScoreColor(app.riskScore)}>
+                                      {app.riskScore}
+                                    </Badge>
+                                  </div>
+                                )}
 
-                            <div className="text-xs text-gray-400 pt-1 border-t">
-                              {app.applicationNumber}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))
-                    )}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
+                                <div className="text-xs text-gray-400 pt-1 border-t truncate">
+                                  {app.applicationNumber}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </div>
           )
         })}
       </div>
