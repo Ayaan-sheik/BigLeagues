@@ -86,15 +86,15 @@ export default function AnalyticsPage() {
         <Card className="border-gray-200">
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-[#37322F]">
-              ₹{((analytics?.totalPremium || 0) / 100000).toFixed(1)}L
+              ₹{((analytics?.totalPremium || 0) / 100000).toFixed(2)}L
             </div>
-            <p className="text-xs text-gray-500 mt-1">Total Premium</p>
+            <p className="text-xs text-gray-500 mt-1">Total Premium Collected</p>
           </CardContent>
         </Card>
         <Card className="border-gray-200">
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-green-600">{analytics?.lossRatio?.toFixed(1) || 0}%</div>
-            <p className="text-xs text-gray-500 mt-1">Loss Ratio</p>
+            <div className="text-2xl font-bold text-green-600">{analytics?.numberOfPremiums || 0}</div>
+            <p className="text-xs text-gray-500 mt-1">Number of Premiums</p>
           </CardContent>
         </Card>
         <Card className="border-gray-200">
@@ -105,8 +105,8 @@ export default function AnalyticsPage() {
         </Card>
         <Card className="border-gray-200">
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-purple-600">₹{analytics?.avgPremium?.toFixed(0) || 0}</div>
-            <p className="text-xs text-gray-500 mt-1">Avg Premium</p>
+            <div className="text-2xl font-bold text-purple-600">₹{analytics?.highestPremium?.toFixed(0) || 0}</div>
+            <p className="text-xs text-gray-500 mt-1">Highest Premium</p>
           </CardContent>
         </Card>
       </div>
