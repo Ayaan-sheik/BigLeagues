@@ -65,8 +65,9 @@ async function handleRoute(request, { params }) {
         createdAt: new Date(),
       }
 
-      await db.collection('leads').insertOne(lead)
-      return handleCORS(NextResponse.json({ ...lead }))
+      const insertRes = await db.collection('leads').insertOne(lead)
+      // Ensure we never leak Mongo ObjectId back to clients
+      return handleCORS(NextResponse.json({ ...lead, inserted: Boolean(insertRes?.acknowledged) }))
     }
 
     // Leads - GET /api/leads (simple admin/dev check)
