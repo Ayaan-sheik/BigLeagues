@@ -386,13 +386,7 @@ export default function LandingPage() {
                   Read the integration guide →
                 </button>
 
-                <div className="mt-10">
-                  <MockupSVG
-                    title="API Orchestration"
-                    subtitle="/risk-score • /premium • /webhooks"
-                    className="border-gray-800 bg-[#0B0B0B]"
-                  />
-                </div>
+
               </div>
               <div className="flex-1 w-full bg-[#1A1A1A] rounded-lg p-6 font-mono text-xs md:text-sm border border-gray-800 overflow-x-auto">
                 <div className="text-green-400 mb-2">// CONFIG: Split Settlement</div>
