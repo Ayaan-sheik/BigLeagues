@@ -2,14 +2,12 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -34,7 +32,20 @@ export default function LoginPage() {
         setError(result.error)
         setIsLoading(false)
       } else {
-        router.push(callbackUrl)
+        // Fetch user session to get role
+        const sessionRes = await fetch('/api/auth/session')
+        const session = await sessionRes.json()
+        
+        if (session && session.user) {
+          // Redirect based on role
+          if (session.user.role === 'admin') {
+            router.push('/admin')
+          } else {
+            router.push('/customer')
+          }
+        } else {
+          router.push('/')
+        }
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
@@ -46,7 +57,7 @@ export default function LoginPage() {
     setIsLoading(true)
     setError('')
     try {
-      await signIn('google', { callbackUrl })
+      await signIn('google', { callbackUrl: '/' })
     } catch (err) {
       setError('Google sign-in failed. Please try again.')
       setIsLoading(false)
@@ -113,9 +124,10 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-11 pr-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all"
                   placeholder="you@example.com"
+                  required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -132,9 +144,10 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-11 pr-12 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all"
                   placeholder="••••••••"
+                  required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
@@ -146,20 +159,21 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Remember Me & Forgot Password */}
+            {/* Remember me & Forgot password */}
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer group">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-2 focus:ring-gray-900 cursor-pointer"
+                  className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500 transition-colors"
+                  disabled={isLoading}
                 />
-                <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Remember me</span>
+                <span className="text-sm text-gray-600">Remember me</span>
               </label>
               <Link
                 href="/auth/forgot-password"
-                className="text-sm text-gray-900 hover:text-gray-700 transition-colors font-medium"
+                className="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors"
               >
                 Forgot password?
               </Link>
@@ -169,28 +183,26 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gray-900 hover:bg-black text-white font-semibold rounded-lg py-3 px-4 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#37322F] hover:bg-[#2d2823] text-white py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                'Signing in...'
               ) : (
                 <>
-                  Sign In
+                  Sign in
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Sign Up Link */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
-              Don't have an account?{' '}
-              <Link href="/auth/register" className="text-gray-900 hover:text-gray-700 font-medium transition-colors">
-                Sign up
-              </Link>
-            </p>
-          </div>
+          {/* Sign up link */}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Don't have an account?{' '}
+            <Link href="/auth/register" className="text-orange-500 hover:text-orange-600 font-medium transition-colors">
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>
