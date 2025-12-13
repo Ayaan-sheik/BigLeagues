@@ -104,8 +104,8 @@ export default function UnderwritingPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      {/* Stats - Aligned with Kanban columns */}
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-5">
         <Card className="border-gray-200">
           <CardContent className="pt-4 pb-4">
             <div className="text-xl font-bold text-[#37322F]">{applications.length}</div>
