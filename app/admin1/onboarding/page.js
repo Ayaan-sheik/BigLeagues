@@ -215,7 +215,7 @@ export default function AdminOnboarding() {
 
       if (response.ok) {
         // Redirect to admin dashboard
-        router.push('/admin/dashboard')
+        router.push('/admin1/dashboard')
       } else {
         const data = await response.json()
         alert(data.error || 'Failed to submit')
