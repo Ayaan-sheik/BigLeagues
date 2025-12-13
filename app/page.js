@@ -465,28 +465,7 @@ export default function LandingPage() {
             </div>
           </Section>
 
-          {/* 7. Differentiation */}
-          <Section className="bg-white text-center">
-            <h2 className="text-2xl font-semibold mb-8">Combined founder risk + product failure model.</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {['Per-transaction Recovery', 'Founder Risk Coverage', 'Gateway Architecture', 'Portfolio Protection'].map(
-                (trait) => (
-                  <div
-                    key={trait}
-                    className="p-4 border border-gray-100 rounded bg-gray-50 font-medium text-gray-800"
-                  >
-                    {trait}
-                  </div>
-                )
-              )}
-            </div>
-            <p className="mt-8 text-sm text-gray-500 max-w-2xl mx-auto">
-              We are the only platform offering a combined <strong>“founder risk + product failure + per-transaction premium”</strong>{' '}
-              model.
-            </p>
-          </Section>
-
-          {/* 8. Compliance */}
+          {/* 7. Compliance */}
           <Section>
             <div className="p-6 bg-gray-100 rounded-lg text-center max-w-2xl mx-auto">
               <Shield className="w-8 h-8 mx-auto mb-3 text-gray-400" />
