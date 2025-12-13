@@ -73,7 +73,7 @@ function SidebarContent({ closeMobile }) {
       </ScrollArea>
 
       {/* Footer */}
-      <div className="border-t p-4">
+      <div className="border-t p-4 space-y-3">
         <div className="flex items-center gap-3 rounded-lg bg-blue-50 p-3 border border-blue-200">
           <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
           <div className="text-xs">
@@ -81,6 +81,7 @@ function SidebarContent({ closeMobile }) {
             <p className="text-blue-700">API connected</p>
           </div>
         </div>
+        <LogoutButton variant="ghost" className="w-full justify-start text-gray-700 hover:bg-gray-100" />
       </div>
     </div>
   )
