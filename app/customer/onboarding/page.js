@@ -126,7 +126,7 @@ export default function AdminOnboarding() {
 
   const fetchSavedProfile = async () => {
     try {
-      const res = await fetch('/api/admin/profile')
+      const res = await fetch('/api/customer/profile')
       if (res.ok) {
         const data = await res.json()
         if (data.profile) {
