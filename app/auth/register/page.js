@@ -182,39 +182,62 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Role Selection Toggle */}
+            {/* Role Selection Cards */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Account Type
               </label>
-              <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <Shield className="w-5 h-5 text-gray-600" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {role === 'customer' ? 'Customer Account' : 'Admin Account'}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {role === 'customer' 
-                        ? 'Standard access for using InsureInfra services' 
-                        : 'Full administrative access and management'}
-                    </p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                {/* Customer Card */}
                 <button
                   type="button"
-                  onClick={() => setRole(role === 'customer' ? 'admin' : 'customer')}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 ${
-                    role === 'admin' ? 'bg-gray-900' : 'bg-gray-300'
+                  onClick={() => setRole('customer')}
+                  className={`relative p-4 rounded-lg border-2 transition-all text-left ${
+                    role === 'customer'
+                      ? 'border-gray-900 bg-gray-50'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
-                  role="switch"
-                  aria-checked={role === 'admin'}
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      role === 'admin' ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
+                  {role === 'customer' && (
+                    <div className="absolute top-3 right-3">
+                      <div className="w-5 h-5 bg-gray-900 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  )}
+                  <User className="w-6 h-6 text-gray-700 mb-2" />
+                  <p className="text-sm font-semibold text-gray-900 mb-1">Customer</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    Standard access for using InsureInfra services
+                  </p>
+                </button>
+
+                {/* Admin Card */}
+                <button
+                  type="button"
+                  onClick={() => setRole('admin')}
+                  className={`relative p-4 rounded-lg border-2 transition-all text-left ${
+                    role === 'admin'
+                      ? 'border-gray-900 bg-gray-50'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                  }`}
+                >
+                  {role === 'admin' && (
+                    <div className="absolute top-3 right-3">
+                      <div className="w-5 h-5 bg-gray-900 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  )}
+                  <Shield className="w-6 h-6 text-gray-700 mb-2" />
+                  <p className="text-sm font-semibold text-gray-900 mb-1">Admin</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    Full administrative access and management
+                  </p>
                 </button>
               </div>
             </div>
