@@ -297,7 +297,7 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
           <div className="space-y-3">
             <h3 className="font-semibold text-gray-900">Product Selection & Premium</h3>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="product">Select Product</Label>
                 <Select value={selectedProductId} onValueChange={setSelectedProductId}>
@@ -315,10 +315,22 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
               </div>
 
               <div className="space-y-2">
+                <Label>Product Price (Customer)</Label>
+                <div className="flex items-center h-10 px-3 rounded-md border bg-gray-50">
+                  <p className="text-sm font-bold text-purple-700">
+                    ₹{(application.productPrice || 0).toLocaleString('en-IN')}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-500">Max premium allowed</p>
+              </div>
+
+              <div className="space-y-2">
                 <Label>Coverage Amount</Label>
-                <p className="text-lg font-bold text-[#37322F]">
-                  ₹{(application.coverageAmount / 100000).toFixed(1)}L
-                </p>
+                <div className="flex items-center h-10 px-3 rounded-md border bg-gray-50">
+                  <p className="text-sm font-bold text-[#37322F]">
+                    ₹{(application.coverageAmount / 100000).toFixed(1)}L
+                  </p>
+                </div>
               </div>
             </div>
 
