@@ -105,40 +105,40 @@ export default function UnderwritingPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <Card className="border-gray-200">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-[#37322F]">{applications.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Total Applications</p>
+          <CardContent className="pt-4 pb-4">
+            <div className="text-xl font-bold text-[#37322F]">{applications.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Total</p>
           </CardContent>
         </Card>
         <Card className="border-gray-200">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-blue-600">
+          <CardContent className="pt-4 pb-4">
+            <div className="text-xl font-bold text-blue-600">
               {getApplicationsByStatus('new').length}
             </div>
             <p className="text-xs text-gray-500 mt-1">New</p>
           </CardContent>
         </Card>
         <Card className="border-gray-200">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-yellow-600">
+          <CardContent className="pt-4 pb-4">
+            <div className="text-xl font-bold text-yellow-600">
               {getApplicationsByStatus('under_review').length}
             </div>
             <p className="text-xs text-gray-500 mt-1">In Review</p>
           </CardContent>
         </Card>
         <Card className="border-gray-200">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-green-600">
+          <CardContent className="pt-4 pb-4">
+            <div className="text-xl font-bold text-green-600">
               {getApplicationsByStatus('approved').length}
             </div>
             <p className="text-xs text-gray-500 mt-1">Approved</p>
           </CardContent>
         </Card>
         <Card className="border-gray-200">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">
+          <CardContent className="pt-4 pb-4">
+            <div className="text-xl font-bold text-red-600">
               {getApplicationsByStatus('rejected').length}
             </div>
             <p className="text-xs text-gray-500 mt-1">Rejected</p>
