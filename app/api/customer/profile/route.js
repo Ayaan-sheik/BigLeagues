@@ -42,23 +42,34 @@ export async function POST(request) {
       userId: session.user.id
     })
 
+    let profile
+
     if (existing) {
-      return NextResponse.json(
-        { error: 'Profile already exists. Use PUT to update.' },
-        { status: 409 }
+      // Update existing profile
+      const result = await db.collection('startup_profiles').findOneAndUpdate(
+        { userId: session.user.id },
+        { 
+          $set: { 
+            ...body,
+            onboardingStatus: 'pending_review',
+            updatedAt: new Date()
+          } 
+        },
+        { returnDocument: 'after' }
       )
+      profile = result.value
+    } else {
+      // Create new profile
+      profile = {
+        id: uuidv4(),
+        userId: session.user.id,
+        ...body,
+        onboardingStatus: 'pending_review',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+      await db.collection('startup_profiles').insertOne(profile)
     }
-
-    const profile = {
-      id: uuidv4(),
-      userId: session.user.id,
-      ...body,
-      onboardingStatus: 'pending_review',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-
-    await db.collection('startup_profiles').insertOne(profile)
 
     // Update user profileCompleted flag
     await db.collection('users').updateOne(
@@ -72,7 +83,7 @@ export async function POST(request) {
       }
     )
 
-    return NextResponse.json({ profile }, { status: 201 })
+    return NextResponse.json({ profile }, { status: existing ? 200 : 201 })
   } catch (error) {
     console.error('Create profile error:', error)
     return NextResponse.json(
