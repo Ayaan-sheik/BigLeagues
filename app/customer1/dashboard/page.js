@@ -16,7 +16,7 @@ export default function CustomerDashboard() {
       router.push('/auth/login')
     } else if (status === 'authenticated') {
       if (session?.user?.role !== 'customer') {
-        router.push('/admin/dashboard')
+        router.push('/admin1/dashboard')
       } else {
         fetchProfile()
       }

@@ -90,7 +90,7 @@ export default function CustomerOnboarding() {
       router.push('/auth/login')
     } else if (status === 'authenticated') {
       if (session?.user?.role !== 'customer') {
-        router.push('/admin/onboarding')
+        router.push('/admin1/onboarding')
       } else {
         fetchSavedProfile()
       }
