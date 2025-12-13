@@ -95,6 +95,7 @@ const handler = NextAuth({
       if (token) {
         session.user.id = token.id
         session.user.role = token.role
+        session.user.profileCompleted = token.profileCompleted
       }
       return session
     },
