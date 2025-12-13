@@ -10,17 +10,18 @@ export async function GET(request) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    // Total Premium
-    const transactions = await db.collection('transactions').find({ createdAt: { $gte: startDate } }).toArray();
-    const totalPremium = transactions.reduce((sum, t) => sum + (t.premium || 0), 0);
-    const avgPremium = transactions.length > 0 ? totalPremium / transactions.length : 0;
-
-    // Loss Ratio - use all claims regardless of date for better metrics
-    const allClaims = await db.collection('claims').find({}).toArray();
-    const totalClaimsPaid = allClaims
-      .filter((c) => c.status === 'paid')
-      .reduce((sum, c) => sum + (c.approvedAmount || 0), 0);
-    const lossRatio = totalPremium > 0 ? (totalClaimsPaid / totalPremium) * 100 : 0;
+    // Get all transactions (for accurate total premium)
+    const allTransactions = await db.collection('transactions').find({}).toArray();
+    const totalPremium = allTransactions.reduce((sum, t) => sum + (t.premium || 0), 0);
+    const avgPremium = allTransactions.length > 0 ? totalPremium / allTransactions.length : 0;
+    
+    // Number of premiums done (total transaction count)
+    const numberOfPremiums = allTransactions.length;
+    
+    // Highest premium (max premium from any transaction)
+    const highestPremium = allTransactions.length > 0 
+      ? Math.max(...allTransactions.map(t => t.premium || 0))
+      : 0;
 
     // Conversion Rate - use all applications
     const allApplications = await db.collection('applications').find({}).toArray();
@@ -31,7 +32,7 @@ export async function GET(request) {
     const premiumTrend = [];
     const dateMap = {};
 
-    transactions.forEach((t) => {
+    allTransactions.forEach((t) => {
       const date = new Date(t.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
       dateMap[date] = (dateMap[date] || 0) + (t.premium || 0);
     });
@@ -60,19 +61,21 @@ export async function GET(request) {
       premium: s.totalPremiumMTD || 0,
     }));
 
-    // Claims by Product - use all claims for better visualization
+    // Claims by Product - use ALL claims from database
+    const allClaims = await db.collection('claims').find({}).toArray();
     const claimProductMap = {};
+    
     allClaims.forEach((c) => {
       const productName = c.productName || 'Unknown';
       claimProductMap[productName] = (claimProductMap[productName] || 0) + 1;
     });
 
     const claimsByProduct = Object.keys(claimProductMap).map((product) => ({
-      product: product.length > 20 ? product.substring(0, 20) + '...' : product,
+      product: product.length > 25 ? product.substring(0, 25) + '...' : product,
       count: claimProductMap[product],
     }));
 
-    // If no claims, return empty array instead of empty object
+    // If no claims, return placeholder
     if (claimsByProduct.length === 0) {
       claimsByProduct.push({ product: 'No Claims', count: 0 });
     }
@@ -80,7 +83,8 @@ export async function GET(request) {
     return NextResponse.json({
       totalPremium,
       avgPremium,
-      lossRatio,
+      numberOfPremiums,
+      highestPremium,
       conversionRate,
       premiumTrend: premiumTrend.length > 0 ? premiumTrend : [{ date: 'No Data', premium: 0 }],
       policyDistribution: policyDistribution.length > 0 ? policyDistribution : [{ name: 'No Policies', count: 0 }],
