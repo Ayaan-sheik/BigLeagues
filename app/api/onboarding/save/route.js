@@ -21,13 +21,30 @@ export async function POST(request) {
       userId: session.user.id
     })
 
+    // Deep merge function to handle nested objects
+    const deepMerge = (target, source) => {
+      const output = { ...target }
+      for (const key in source) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          output[key] = deepMerge(target[key] || {}, source[key])
+        } else {
+          output[key] = source[key]
+        }
+      }
+      return output
+    }
+
     if (profile) {
-      // Update existing profile
+      // Merge with existing data to preserve previous steps
+      const mergedData = deepMerge(profile, data)
+      
+      // Update existing profile with merged data
       await db.collection(collection).updateOne(
         { userId: session.user.id },
         { 
           $set: { 
-            ...data,
+            ...mergedData,
+            userId: session.user.id, // Ensure userId is preserved
             updatedAt: new Date()
           } 
         }
