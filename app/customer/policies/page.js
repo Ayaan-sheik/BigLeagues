@@ -64,7 +64,7 @@ export default function PoliciesPage() {
           <h1 className="text-3xl font-bold text-gray-900">My Policies</h1>
           <p className="text-gray-600 mt-1">Manage your insurance coverage</p>
         </div>
-        <Button>
+        <Button onClick={() => router.push('/customer/policies/apply')}>
           <Plus className="h-4 w-4 mr-2" />
           New Application
         </Button>
