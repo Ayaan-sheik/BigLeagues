@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db-admin';
+import { logAuditEvent } from '@/lib/audit-logger';
 
 export async function GET() {
   try {
@@ -19,6 +20,8 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const startTime = Date.now();
+  
   try {
     const { db } = await connectToDatabase();
     const body = await request.json();
@@ -33,9 +36,33 @@ export async function POST(request) {
 
     await db.collection('products').insertOne(product);
 
+    // Log product creation
+    await logAuditEvent({
+      action: 'create',
+      entityType: 'product',
+      entityId: product.id,
+      method: 'POST',
+      endpoint: '/api/admin/products',
+      status: 201,
+      severity: 'medium',
+      changes: { after: body },
+      responseTime: Date.now() - startTime,
+    });
+
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error('Error creating product:', error);
+    
+    await logAuditEvent({
+      action: 'create',
+      entityType: 'product',
+      method: 'POST',
+      endpoint: '/api/admin/products',
+      status: 500,
+      severity: 'critical',
+      responseTime: Date.now() - startTime,
+    });
+    
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
   }
 }
