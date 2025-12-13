@@ -39,21 +39,57 @@ export async function POST(request) {
     const body = await request.json()
     const db = await getDb()
 
+    // Get policy details
+    const policy = await db.collection('policies').findOne({ 
+      id: body.policyId,
+      userId: session.user.id 
+    })
+
+    if (!policy) {
+      return NextResponse.json({ error: 'Policy not found' }, { status: 404 })
+    }
+
+    // Get user details
+    const user = await db.collection('users').findOne({ id: session.user.id })
+
+    // Get startup profile
+    const profile = await db.collection('startup_profiles').findOne({ userId: session.user.id })
+
     const claim = {
       id: uuidv4(),
       claimNumber: `CLM-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
       userId: session.user.id,
+      startupName: profile?.companyName || user?.name || 'Unknown',
       policyId: body.policyId,
+      policyNumber: policy.policyNumber,
+      productName: policy.productName || 'General Insurance',
       incidentDate: body.incidentDate,
       description: body.description,
       claimAmount: parseFloat(body.claimAmount),
+      claimType: body.claimType || 'General',
       status: 'new',
+      priority: 'medium',
       evidenceDocuments: body.evidenceDocuments || [],
+      adjusterNotes: '',
+      internalNotes: '',
       createdAt: new Date(),
       updatedAt: new Date(),
     }
 
     await db.collection('claims').insertOne(claim)
+
+    // Create notification for admin
+    await db.collection('notifications').insertOne({
+      id: uuidv4(),
+      type: 'new_claim',
+      title: 'New Claim Filed',
+      message: `${claim.startupName} filed a new claim for ₹${claim.claimAmount}`,
+      entityType: 'claim',
+      entityId: claim.id,
+      recipientRole: 'admin',
+      read: false,
+      createdAt: new Date(),
+    })
 
     return NextResponse.json({ claim }, { status: 201 })
   } catch (error) {
