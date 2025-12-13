@@ -1,5 +1,6 @@
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
+import { SessionProvider } from '@/components/providers/SessionProvider'
 
 export const metadata = {
   title: 'InsureInfra — Embedded Insurance Orchestration',
@@ -11,7 +12,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        {children}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
         <Toaster />
       </body>
     </html>
