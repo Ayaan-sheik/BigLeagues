@@ -182,6 +182,43 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Role Selection Toggle */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Account Type
+              </label>
+              <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-gray-600" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {role === 'customer' ? 'Customer Account' : 'Admin Account'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {role === 'customer' 
+                        ? 'Standard access for using InsureInfra services' 
+                        : 'Full administrative access and management'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setRole(role === 'customer' ? 'admin' : 'customer')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 ${
+                    role === 'admin' ? 'bg-gray-900' : 'bg-gray-300'
+                  }`}
+                  role="switch"
+                  aria-checked={role === 'admin'}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      role === 'admin' ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
