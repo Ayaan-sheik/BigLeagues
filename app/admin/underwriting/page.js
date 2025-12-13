@@ -184,7 +184,7 @@ export default function UnderwritingPage() {
                                 <div className="flex items-start justify-between gap-2">
                                   <GripVertical className="h-4 w-4 text-gray-400 flex-shrink-0 mt-0.5" />
                                   <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-gray-900 truncate">
+                                    <p className="text-sm font-semibold text-gray-900 break-words line-clamp-2">
                                       {app.companyName}
                                     </p>
                                     <p className="text-xs text-gray-500 mt-1">{app.industry}</p>
