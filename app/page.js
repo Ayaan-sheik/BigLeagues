@@ -149,6 +149,7 @@ function scrollToId(id) {
 // --- Main Page Component ---
 
 export default function LandingPage() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState(null) // {type:'success'|'error', message:string}
