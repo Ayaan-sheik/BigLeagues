@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Eye, EyeOff, Lock, Mail, User, ArrowRight, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, User, ArrowRight, AlertCircle, Shield } from 'lucide-react'
 
 export default function RegisterPage() {
   const router = useRouter()
