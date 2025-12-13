@@ -54,12 +54,25 @@ export async function GET(request) {
       count: productMap[name],
     }));
 
-    // Top Startups
-    const startups = await db.collection('startups').find({ status: 'active' }).sort({ totalPremiumMTD: -1 }).limit(5).toArray();
-    const topStartups = startups.map((s) => ({
-      name: s.name,
-      premium: s.totalPremiumMTD || 0,
-    }));
+    // Top Startups - Calculate from ACTUAL transactions, not static field
+    const startupPremiumMap = {};
+    
+    allTransactions.forEach((t) => {
+      const startupId = t.startupId;
+      const startupName = t.startupName;
+      if (!startupPremiumMap[startupId]) {
+        startupPremiumMap[startupId] = {
+          name: startupName,
+          premium: 0,
+        };
+      }
+      startupPremiumMap[startupId].premium += (t.premium || 0);
+    });
+
+    // Convert to array, sort by premium, and get top 5
+    const topStartups = Object.values(startupPremiumMap)
+      .sort((a, b) => b.premium - a.premium)
+      .slice(0, 5);
 
     // Claims by Product - use ALL claims from database
     const allClaims = await db.collection('claims').find({}).toArray();
