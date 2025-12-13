@@ -199,6 +199,13 @@ export default function UnderwritingPage() {
                                   </span>
                                 </div>
 
+                                {app.productPrice && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-600">Product Price:</span>
+                                    <span className="text-xs font-medium text-purple-600">₹{app.productPrice.toLocaleString()}</span>
+                                  </div>
+                                )}
+
                                 {app.riskScore !== null && (
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs text-gray-600">Risk:</span>
@@ -212,6 +219,11 @@ export default function UnderwritingPage() {
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs text-gray-600">Rec. Premium:</span>
                                     <span className="text-xs font-semibold text-blue-600">₹{app.recommendedPremium}</span>
+                                    {app.productPrice && (
+                                      <span className="text-xs text-gray-400">
+                                        ({((app.recommendedPremium / app.productPrice) * 100).toFixed(1)}%)
+                                      </span>
+                                    )}
                                   </div>
                                 )}
 
@@ -219,6 +231,11 @@ export default function UnderwritingPage() {
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs text-gray-600">Premium:</span>
                                     <span className="text-xs font-bold text-green-600">₹{app.actualPremium}</span>
+                                    {app.productPrice && (
+                                      <span className="text-xs text-gray-400">
+                                        ({((app.actualPremium / app.productPrice) * 100).toFixed(1)}%)
+                                      </span>
+                                    )}
                                   </div>
                                 )}
 
