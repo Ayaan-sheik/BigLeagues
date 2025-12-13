@@ -231,12 +231,8 @@ export default function ApplyForPolicyPage() {
                 <p className="text-sm text-gray-600 mt-1">{selectedProduct.description}</p>
               </div>
               <div className="pt-3 border-t">
-                <p className="text-xs text-gray-500">Base Premium</p>
-                <p className="text-lg font-bold">₹{selectedProduct.basePrice} per ₹10,000</p>
-              </div>
-              <div>
                 <p className="text-xs text-gray-500">Coverage Range</p>
-                <p className="text-sm font-semibold">
+                <p className="text-lg font-bold">
                   ₹{(selectedProduct.coverageMin/100000).toFixed(1)}L - ₹{(selectedProduct.coverageMax/100000).toFixed(1)}L
                 </p>
               </div>
