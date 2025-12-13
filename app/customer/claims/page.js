@@ -219,7 +219,18 @@ export default function ClaimsPage() {
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">View Details</Button>
                   {(claim.status === 'new' || claim.status === 'info_requested') && (
-                    <Button variant="outline" size="sm">Update Claim</Button>
+                    <>
+                      <Button variant="outline" size="sm">Update Claim</Button>
+                      {claim.status === 'new' && (
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleWithdrawClaim(claim.id)}
+                        >
+                          Withdraw
+                        </Button>
+                      )}
+                    </>
                   )}
                 </div>
               </CardContent>
