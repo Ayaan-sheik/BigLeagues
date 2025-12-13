@@ -15,17 +15,17 @@ export async function GET(request) {
     const totalPremium = transactions.reduce((sum, t) => sum + (t.premium || 0), 0);
     const avgPremium = transactions.length > 0 ? totalPremium / transactions.length : 0;
 
-    // Loss Ratio
-    const claims = await db.collection('claims').find({ createdAt: { $gte: startDate } }).toArray();
-    const totalClaimsPaid = claims
+    // Loss Ratio - use all claims regardless of date for better metrics
+    const allClaims = await db.collection('claims').find({}).toArray();
+    const totalClaimsPaid = allClaims
       .filter((c) => c.status === 'paid')
       .reduce((sum, c) => sum + (c.approvedAmount || 0), 0);
     const lossRatio = totalPremium > 0 ? (totalClaimsPaid / totalPremium) * 100 : 0;
 
-    // Conversion Rate
-    const applications = await db.collection('applications').find({ createdAt: { $gte: startDate } }).toArray();
-    const approvedApps = applications.filter((a) => a.status === 'approved').length;
-    const conversionRate = applications.length > 0 ? (approvedApps / applications.length) * 100 : 0;
+    // Conversion Rate - use all applications
+    const allApplications = await db.collection('applications').find({}).toArray();
+    const approvedApps = allApplications.filter((a) => a.status === 'approved').length;
+    const conversionRate = allApplications.length > 0 ? (approvedApps / allApplications.length) * 100 : 0;
 
     // Premium Trend (daily)
     const premiumTrend = [];
