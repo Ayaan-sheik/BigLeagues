@@ -88,23 +88,16 @@ export default function RegisterPage() {
         return
       }
 
-      const result = await signIn('credentials', {
-        redirect: false,
-        email: formData.email,
-        password: formData.password,
+      // Registration successful - redirect to login
+      setError('')
+      toast({
+        title: 'Account created successfully!',
+        description: 'Please login with your credentials.',
       })
-
-      if (result?.error) {
-        setError('Account created but login failed. Please try logging in.')
-        setTimeout(() => router.push('/auth/login'), 2000)
-      } else {
-        // Redirect to appropriate onboarding based on role
-        if (role === 'admin') {
-          router.push('/admin1/onboarding')
-        } else {
-          router.push('/customer1/onboarding')
-        }
-      }
+      
+      setTimeout(() => {
+        router.push('/auth/login')
+      }, 1500)
     } catch (err) {
       setError('An error occurred. Please try again.')
       setIsLoading(false)
