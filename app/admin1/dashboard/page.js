@@ -16,7 +16,7 @@ export default function AdminDashboard() {
       router.push('/auth/login')
     } else if (status === 'authenticated') {
       if (session?.user?.role !== 'admin') {
-        router.push('/customer/dashboard')
+        router.push('/customer1/dashboard')
       } else {
         fetchProfile()
       }

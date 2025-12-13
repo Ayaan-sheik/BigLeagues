@@ -116,7 +116,7 @@ export default function AdminOnboarding() {
       router.push('/auth/login')
     } else if (status === 'authenticated') {
       if (session?.user?.role !== 'admin') {
-        router.push('/customer/onboarding')
+        router.push('/customer1/onboarding')
       } else {
         // Fetch saved profile data and resume
         fetchSavedProfile()
