@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { 
   Building2, FileText, Phone, Upload, CheckCircle, 
-  ArrowRight, ArrowLeft, Loader2, Shield, Check 
+  ArrowRight, ArrowLeft, Loader2, Shield, Check, LogOut 
 } from 'lucide-react'
 
 const STEPS = [
