@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, Check, X, DollarSign } from 'lucide-react'
+import { Eye, Check, X, DollarSign, ArrowLeft, AlertTriangle } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -26,13 +26,76 @@ export default function ClaimDetailDialog({ claim, onSuccess }) {
   const [approvedAmount, setApprovedAmount] = useState(claim.claimAmount?.toString() || '')
   const [notes, setNotes] = useState('')
 
-  async function handleDecision(decision) {
+  // Status flow: new → under_investigation → approved → paid / rejected / disputed
+  // Can also go back: approved → under_investigation, paid → approved
+  
+  function getAvailableActions() {
+    const actions = []
+    
+    switch (claim.status) {
+      case 'new':
+        actions.push(
+          { label: 'Start Investigation', status: 'under_investigation', icon: Eye, variant: 'outline' },
+          { label: 'Reject', status: 'rejected', icon: X, variant: 'destructive' }
+        )
+        break
+        
+      case 'under_investigation':
+        actions.push(
+          { label: 'Approve', status: 'approved', icon: Check, variant: 'default', color: 'bg-green-600 hover:bg-green-700' },
+          { label: 'Reject', status: 'rejected', icon: X, variant: 'destructive' },
+          { label: 'Dispute', status: 'disputed', icon: AlertTriangle, variant: 'outline' }
+        )
+        break
+        
+      case 'approved':
+        actions.push(
+          { label: 'Mark as Paid', status: 'paid', icon: DollarSign, variant: 'default', color: 'bg-blue-600 hover:bg-blue-700' },
+          { label: 'Back to Investigation', status: 'under_investigation', icon: ArrowLeft, variant: 'outline' }
+        )
+        break
+        
+      case 'paid':
+        actions.push(
+          { label: 'Revert to Approved', status: 'approved', icon: ArrowLeft, variant: 'outline' }
+        )
+        break
+        
+      case 'rejected':
+        // Can reopen for investigation
+        actions.push(
+          { label: 'Reopen Investigation', status: 'under_investigation', icon: Eye, variant: 'outline' }
+        )
+        break
+        
+      case 'disputed':
+        actions.push(
+          { label: 'Back to Investigation', status: 'under_investigation', icon: ArrowLeft, variant: 'outline' },
+          { label: 'Reject', status: 'rejected', icon: X, variant: 'destructive' }
+        )
+        break
+    }
+    
+    return actions
+  }
+
+  async function handleStatusChange(newStatus) {
+    // Validate approved amount if approving
+    if (newStatus === 'approved' && !approvedAmount) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please enter an approved amount',
+        variant: 'destructive',
+      })
+      return
+    }
+
     setLoading(true)
 
     try {
       const payload = {
-        status: decision,
-        ...(decision === 'approved' && { approvedAmount: parseInt(approvedAmount) }),
+        status: newStatus,
+        ...(newStatus === 'approved' && { approvedAmount: parseInt(approvedAmount) }),
         ...(notes && { notes }),
       }
 
@@ -46,7 +109,7 @@ export default function ClaimDetailDialog({ claim, onSuccess }) {
 
       toast({
         title: 'Success',
-        description: `Claim ${decision}`,
+        description: `Claim status updated to ${newStatus.replace('_', ' ')}`,
       })
 
       setOpen(false)
@@ -67,6 +130,8 @@ export default function ClaimDetailDialog({ claim, onSuccess }) {
     if (!date) return 'N/A'
     return new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   }
+
+  const availableActions = getAvailableActions()
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -153,10 +218,7 @@ export default function ClaimDetailDialog({ claim, onSuccess }) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Current Status</p>
-              <Badge
-                className="mt-1"
-                variant="outline"
-              >
+              <Badge className="mt-1" variant="outline">
                 {claim.status.replace('_', ' ')}
               </Badge>
             </div>
@@ -169,7 +231,7 @@ export default function ClaimDetailDialog({ claim, onSuccess }) {
           </div>
 
           {/* Decision Panel (if applicable) */}
-          {(claim.status === 'new' || claim.status === 'under_investigation') && (
+          {claim.status === 'under_investigation' && (
             <>
               <Separator />
               <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
@@ -200,42 +262,19 @@ export default function ClaimDetailDialog({ claim, onSuccess }) {
         </div>
 
         <DialogFooter className="flex gap-2">
-          {claim.status === 'new' || claim.status === 'under_investigation' ? (
-            <>
-              <Button
-                variant="outline"
-                onClick={() => handleDecision('under_investigation')}
-                disabled={loading || claim.status === 'under_investigation'}
-              >
-                {claim.status === 'under_investigation' ? 'In Investigation' : 'Start Investigation'}
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => handleDecision('rejected')}
-                disabled={loading}
-              >
-                <X className="h-4 w-4 mr-2" />
-                Reject
-              </Button>
-              <Button
-                className="bg-green-600 hover:bg-green-700"
-                onClick={() => handleDecision('approved')}
-                disabled={loading || !approvedAmount}
-              >
-                <Check className="h-4 w-4 mr-2" />
-                Approve
-              </Button>
-            </>
-          ) : claim.status === 'approved' ? (
+          {availableActions.map((action) => (
             <Button
-              className="bg-blue-600 hover:bg-blue-700"
-              onClick={() => handleDecision('paid')}
+              key={action.status}
+              variant={action.variant}
+              className={action.color}
+              onClick={() => handleStatusChange(action.status)}
               disabled={loading}
             >
-              <DollarSign className="h-4 w-4 mr-2" />
-              Mark as Paid
+              <action.icon className="h-4 w-4 mr-2" />
+              {action.label}
             </Button>
-          ) : (
+          ))}
+          {availableActions.length === 0 && (
             <Button variant="outline" onClick={() => setOpen(false)}>
               Close
             </Button>
