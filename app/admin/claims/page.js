@@ -157,10 +157,10 @@ export default function ClaimsPage() {
         </Card>
         <Card className="border-gray-200">
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">
-              {claims.filter((c) => c.status === 'rejected').length}
+            <div className="text-2xl font-bold text-orange-600">
+              {claims.filter((c) => c.status === 'disputed').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Rejected</p>
+            <p className="text-xs text-gray-500 mt-1">Disputed</p>
           </CardContent>
         </Card>
       </div>
