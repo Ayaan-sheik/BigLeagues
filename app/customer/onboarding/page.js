@@ -191,15 +191,15 @@ export default function AdminOnboarding() {
   const handleSubmit = async () => {
     setIsSubmitting(true)
     try {
-      const response = await fetch('/api/admin/profile', {
+      const response = await fetch('/api/customer/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
 
       if (response.ok) {
-        // Redirect to admin dashboard
-        router.push('/admin/dashboard')
+        // Redirect to customer dashboard
+        router.push('/customer/dashboard')
       } else {
         const data = await response.json()
         alert(data.error || 'Failed to submit')
