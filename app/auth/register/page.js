@@ -100,9 +100,9 @@ export default function RegisterPage() {
       } else {
         // Redirect to appropriate onboarding based on role
         if (role === 'admin') {
-          router.push('/admin/onboarding')
+          router.push('/admin1/onboarding')
         } else {
-          router.push('/customer/onboarding')
+          router.push('/customer1/onboarding')
         }
       }
     } catch (err) {
