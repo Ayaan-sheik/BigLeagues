@@ -101,44 +101,37 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
-
-      {/* Glass card */}
-      <div className="relative w-full max-w-md">
-        <div className="relative bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 p-8">
+    <div className="min-h-screen bg-[#F7F5F3] flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8">
           {/* Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold text-gray-900">
                 InsureInfra
               </h1>
             </Link>
-            <p className="text-slate-400 mt-2 text-sm">Set your new password</p>
+            <p className="text-gray-500 mt-2 text-sm">Set your new password</p>
           </div>
 
           {/* Error message */}
           {error && (
-            <div className="mb-6 bg-red-500/10 backdrop-blur-sm border border-red-500/20 rounded-lg p-4 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-red-200 text-sm">{error}</p>
+            <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
 
           {/* Success message */}
           {success && (
-            <div className="mb-6 bg-green-500/10 backdrop-blur-sm border border-green-500/20 rounded-lg p-4">
+            <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-green-200 text-sm font-medium mb-1">
+                  <p className="text-green-800 text-sm font-medium mb-1">
                     Password reset successfully!
                   </p>
-                  <p className="text-green-300/80 text-xs">
+                  <p className="text-green-700 text-xs">
                     Redirecting to login...
                   </p>
                 </div>
@@ -148,31 +141,29 @@ export default function ResetPasswordPage() {
 
           {!success && (
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Password Input */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                   New Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => handlePasswordChange(e.target.value)}
                     required
-                    className="w-full bg-slate-900/60 backdrop-blur-sm border border-white/15 rounded-lg py-3 pl-11 pr-12 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                    className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-11 pr-12 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
-                {/* Password strength indicator */}
                 {password && (
                   <div className="mt-2">
                     <div className="flex gap-1 mb-1">
@@ -180,49 +171,47 @@ export default function ResetPasswordPage() {
                         <div
                           key={i}
                           className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                            i < passwordStrength ? getPasswordStrengthColor() : 'bg-slate-700'
+                            i < passwordStrength ? getPasswordStrengthColor() : 'bg-gray-200'
                           }`}
                         />
                       ))}
                     </div>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-gray-500">
                       Password strength: <span className="font-medium">{getPasswordStrengthText()}</span>
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Confirm Password Input */}
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
                   Confirm New Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="w-full bg-slate-900/60 backdrop-blur-sm border border-white/15 rounded-lg py-3 pl-11 pr-12 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                    className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-11 pr-12 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   >
                     {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading || !token}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 backdrop-blur-sm text-white font-semibold rounded-lg py-3 px-4 transition-all duration-300 flex items-center justify-center gap-2 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/25"
+                className="w-full bg-gray-900 hover:bg-black text-white font-semibold rounded-lg py-3 px-4 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -236,20 +225,17 @@ export default function ResetPasswordPage() {
             </form>
           )}
 
-          {/* Back to Login */}
           {!success && (
             <div className="mt-6 text-center">
               <Link
                 href="/auth/login"
-                className="text-sm text-slate-400 hover:text-white transition-colors"
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
                 Back to login
               </Link>
             </div>
           )}
         </div>
-
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 blur-2xl" />
       </div>
     </div>
   )
