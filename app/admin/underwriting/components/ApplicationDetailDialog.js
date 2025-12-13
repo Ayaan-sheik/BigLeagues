@@ -118,12 +118,33 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
       return
     }
 
+    const premiumValue = parseInt(actualPremium)
+    
+    // Validate premium doesn't exceed product price
+    if (application.productPrice && premiumValue > application.productPrice) {
+      toast({
+        title: 'Validation Error',
+        description: `Premium (₹${premiumValue}) cannot exceed product price (₹${application.productPrice})`,
+        variant: 'destructive',
+      })
+      return
+    }
+
+    // Warn if premium is very high relative to product price
+    if (application.productPrice && premiumValue > application.productPrice * 0.15) {
+      toast({
+        title: 'Warning',
+        description: `Premium is ${((premiumValue / application.productPrice) * 100).toFixed(1)}% of product price. Are you sure?`,
+        variant: 'default',
+      })
+    }
+
     setLoading(true)
     try {
       const res = await fetch(`/api/admin/applications/${application.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ actualPremium: parseInt(actualPremium) }),
+        body: JSON.stringify({ actualPremium: premiumValue }),
       })
 
       if (!res.ok) throw new Error('Failed to set premium')
