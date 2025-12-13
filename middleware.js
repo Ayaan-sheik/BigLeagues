@@ -8,8 +8,8 @@ export default withAuth(
     const isAuth = !!token
     const isAuthPage = req.nextUrl.pathname.startsWith('/auth')
     const isDashboard = req.nextUrl.pathname.startsWith('/dashboard')
-    const isAdminRoute = req.nextUrl.pathname.startsWith('/admin')
-    const isCustomerRoute = req.nextUrl.pathname.startsWith('/customer')
+    const isAdminRoute = req.nextUrl.pathname.startsWith('/admin1')
+    const isCustomerRoute = req.nextUrl.pathname.startsWith('/customer1')
     const isOnboarding = req.nextUrl.pathname.includes('/onboarding')
 
     // Redirect authenticated users away from auth pages
@@ -21,17 +21,17 @@ export default withAuth(
       if (!profileCompleted) {
         // Redirect to onboarding based on role
         if (role === 'admin') {
-          return NextResponse.redirect(new URL('/admin/onboarding', req.url))
+          return NextResponse.redirect(new URL('/admin1/onboarding', req.url))
         } else {
-          return NextResponse.redirect(new URL('/customer/onboarding', req.url))
+          return NextResponse.redirect(new URL('/customer1/onboarding', req.url))
         }
       }
       
       // If profile completed, go to dashboard
       if (role === 'admin') {
-        return NextResponse.redirect(new URL('/admin/dashboard', req.url))
+        return NextResponse.redirect(new URL('/admin1/dashboard', req.url))
       } else {
-        return NextResponse.redirect(new URL('/customer/dashboard', req.url))
+        return NextResponse.redirect(new URL('/customer1/dashboard', req.url))
       }
     }
 
@@ -47,9 +47,9 @@ export default withAuth(
       
       if (!profileCompleted) {
         if (role === 'admin') {
-          return NextResponse.redirect(new URL('/admin/onboarding', req.url))
+          return NextResponse.redirect(new URL('/admin1/onboarding', req.url))
         } else {
-          return NextResponse.redirect(new URL('/customer/onboarding', req.url))
+          return NextResponse.redirect(new URL('/customer1/onboarding', req.url))
         }
       }
     }
@@ -60,7 +60,7 @@ export default withAuth(
         return NextResponse.redirect(new URL('/auth/login', req.url))
       }
       if (token?.role !== 'admin') {
-        return NextResponse.redirect(new URL('/customer/dashboard', req.url))
+        return NextResponse.redirect(new URL('/customer1/dashboard', req.url))
       }
     }
 
@@ -70,7 +70,7 @@ export default withAuth(
         return NextResponse.redirect(new URL('/auth/login', req.url))
       }
       if (token?.role !== 'customer') {
-        return NextResponse.redirect(new URL('/admin/dashboard', req.url))
+        return NextResponse.redirect(new URL('/admin1/dashboard', req.url))
       }
     }
 
@@ -84,5 +84,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/customer/:path*', '/auth/:path*'],
+  matcher: ['/dashboard/:path*', '/admin1/:path*', '/customer1/:path*', '/auth/:path*'],
 }
