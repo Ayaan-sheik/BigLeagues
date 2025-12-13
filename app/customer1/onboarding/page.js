@@ -189,7 +189,7 @@ export default function CustomerOnboarding() {
         body: JSON.stringify(formData)
       })
       if (response.ok) {
-        router.push('/customer/dashboard')
+        router.push('/customer1/dashboard')
       } else {
         const data = await response.json()
         alert(data.error || 'Failed to submit')
