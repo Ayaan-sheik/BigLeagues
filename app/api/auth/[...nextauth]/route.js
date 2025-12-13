@@ -89,8 +89,9 @@ const handler = NextAuth({
     },
     
     async redirect({ url, baseUrl }) {
-      // Redirect to dashboard after login based on role
+      // Redirect to appropriate page after login
       if (url.includes('/auth/login') || url === baseUrl) {
+        // This will be handled by middleware based on profileCompleted
         return `${baseUrl}/dashboard`
       }
       return url
