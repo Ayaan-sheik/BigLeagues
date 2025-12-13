@@ -1,88 +1,55 @@
-import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
-export default withAuth(
-  async function middleware(req) {
-    const token = req.nextauth.token
-    const isAuth = !!token
-    const isAuthPage = req.nextUrl.pathname.startsWith('/auth')
-    const isDashboard = req.nextUrl.pathname.startsWith('/dashboard')
-    const isAdminRoute = req.nextUrl.pathname.startsWith('/admin1')
-    const isCustomerRoute = req.nextUrl.pathname.startsWith('/customer1')
-    const isOnboarding = req.nextUrl.pathname.includes('/onboarding')
+export async function middleware(req) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  const { pathname } = req.nextUrl
 
-    // Redirect authenticated users away from auth pages
-    if (isAuthPage && isAuth) {
-      // Check if profile is completed
-      const profileCompleted = token?.profileCompleted
-      const role = token?.role
-      
-      if (!profileCompleted) {
-        // Redirect to onboarding based on role
-        if (role === 'admin') {
-          return NextResponse.redirect(new URL('/admin1/onboarding', req.url))
-        } else {
-          return NextResponse.redirect(new URL('/customer1/onboarding', req.url))
-        }
-      }
-      
-      // If profile completed, go to dashboard
-      if (role === 'admin') {
-        return NextResponse.redirect(new URL('/admin', req.url))
-      } else {
-        return NextResponse.redirect(new URL('/customer1/dashboard', req.url))
-      }
-    }
-
-    // Protect dashboard routes
-    if (isDashboard && !isAuth) {
-      return NextResponse.redirect(new URL('/auth/login', req.url))
-    }
-    
-    // If trying to access dashboard but onboarding not complete
-    if ((isDashboard || isAdminRoute || isCustomerRoute) && isAuth && !isOnboarding) {
-      const profileCompleted = token?.profileCompleted
-      const role = token?.role
-      
-      if (!profileCompleted) {
-        if (role === 'admin') {
-          return NextResponse.redirect(new URL('/admin1/onboarding', req.url))
-        } else {
-          return NextResponse.redirect(new URL('/customer1/onboarding', req.url))
-        }
-      }
-    }
-
-    // Protect admin routes
-    if (isAdminRoute) {
-      if (!isAuth) {
-        return NextResponse.redirect(new URL('/auth/login', req.url))
-      }
-      if (token?.role !== 'admin') {
-        return NextResponse.redirect(new URL('/customer1/dashboard', req.url))
-      }
-    }
-
-    // Protect customer routes
-    if (isCustomerRoute) {
-      if (!isAuth) {
-        return NextResponse.redirect(new URL('/auth/login', req.url))
-      }
-      if (token?.role !== 'customer') {
-        return NextResponse.redirect(new URL('/admin1/dashboard', req.url))
-      }
-    }
-
+  // Public routes that don't need authentication
+  const publicRoutes = ['/', '/auth/login', '/auth/register', '/auth/forgot-password']
+  
+  if (publicRoutes.some(route => pathname === route || pathname.startsWith('/api/auth'))) {
     return NextResponse.next()
-  },
-  {
-    callbacks: {
-      authorized: () => true, // Handle authorization in the middleware function above
-    },
   }
-)
+
+  // If not authenticated, redirect to login
+  if (!token) {
+    const loginUrl = new URL('/auth/login', req.url)
+    loginUrl.searchParams.set('callbackUrl', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Protect admin routes
+  if (pathname.startsWith('/admin')) {
+    if (token.role !== 'admin') {
+      return NextResponse.redirect(new URL('/customer', req.url))
+    }
+  }
+
+  // Protect customer routes
+  if (pathname.startsWith('/customer')) {
+    if (token.role !== 'customer') {
+      return NextResponse.redirect(new URL('/admin', req.url))
+    }
+  }
+
+  // Protect API routes based on role
+  if (pathname.startsWith('/api/admin') && token.role !== 'admin') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+  }
+
+  if (pathname.startsWith('/api/customer') && token.role !== 'customer') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+  }
+
+  return NextResponse.next()
+}
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin1/:path*', '/customer1/:path*', '/auth/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/customer/:path*',
+    '/api/admin/:path*',
+    '/api/customer/:path*',
+  ],
 }
