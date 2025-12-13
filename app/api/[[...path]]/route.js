@@ -65,8 +65,10 @@ async function handleRoute(request, { params }) {
         createdAt: new Date(),
       }
 
-      const insertRes = await db.collection('leads').insertOne(lead)
-      // Ensure we never leak Mongo ObjectId back to clients
+      // Mongo driver may mutate the inserted object by adding _id.
+      // Keep the response UUID-only.
+      const leadDoc = { ...lead }
+      const insertRes = await db.collection('leads').insertOne(leadDoc)
       return handleCORS(NextResponse.json({ ...lead, inserted: Boolean(insertRes?.acknowledged) }))
     }
 
