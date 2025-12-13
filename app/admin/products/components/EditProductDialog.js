@@ -52,6 +52,19 @@ export default function EditProductDialog({ product, onSuccess, trigger }) {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    
+    const minCoverage = parseInt(formData.coverageMin) || 0
+    const maxCoverage = parseInt(formData.coverageMax) || 0
+    
+    if (minCoverage >= maxCoverage) {
+      toast({
+        title: 'Validation Error',
+        description: 'Minimum coverage must be less than maximum coverage',
+        variant: 'destructive',
+      })
+      return
+    }
+    
     setLoading(true)
 
     try {
@@ -61,8 +74,8 @@ export default function EditProductDialog({ product, onSuccess, trigger }) {
         body: JSON.stringify({
           ...formData,
           basePrice: parseInt(formData.basePrice) || 0,
-          coverageMin: parseInt(formData.coverageMin) || 0,
-          coverageMax: parseInt(formData.coverageMax) || 0,
+          coverageMin: minCoverage,
+          coverageMax: maxCoverage,
         }),
       })
 
