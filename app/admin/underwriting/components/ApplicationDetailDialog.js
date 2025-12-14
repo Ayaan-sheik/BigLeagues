@@ -303,68 +303,70 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
               </div>
             )}
 
-            {/* Actual Premium Setting (Info Required onwards) */}
-            {(application.status === 'additional_info_required' || application.status === 'under_review' || application.status === 'approved') && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-semibold text-green-900">Set Actual Premium</h4>
-                  {!editingPremium && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditingPremium(true)}
-                    >
-                      <Edit className="h-3 w-3 mr-2" />
-                      {application.actualPremium ? 'Edit Premium' : 'Set Premium'}
-                    </Button>
-                  )}
-                </div>
-
-                {editingPremium ? (
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <Label htmlFor="actualPremium">Actual Premium (₹)</Label>
-                      <Input
-                        id="actualPremium"
-                        type="number"
-                        value={actualPremium}
-                        onChange={(e) => setActualPremium(e.target.value)}
-                        placeholder={recommendedPremium ? `Recommended: ₹${recommendedPremium}` : 'Enter premium amount'}
-                      />
-                      {recommendedPremium && (
-                        <p className="text-xs text-green-700">Recommended: ₹{recommendedPremium}</p>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={handleSetActualPremium}
-                        disabled={loading}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        {loading ? 'Saving...' : 'Save Premium'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setEditingPremium(false)
-                          setActualPremium(application.actualPremium?.toString() || '')
-                        }}
-                        disabled={loading}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  application.actualPremium && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-green-700">Actual Premium Set:</span>
-                      <p className="text-2xl font-bold text-green-900">₹{application.actualPremium}</p>
-                    </div>
-                  )
+            {/* Manual Premium Setting */}
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold text-green-900">Set Actual Premium (Manual)</h4>
+                {!editingPremium && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditingPremium(true)}
+                  >
+                    <Edit className="h-3 w-3 mr-2" />
+                    {application.actualPremium ? 'Edit Premium' : 'Set Premium'}
+                  </Button>
                 )}
               </div>
-            )}
+
+              {editingPremium ? (
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="actualPremium">Actual Premium (₹)</Label>
+                    <Input
+                      id="actualPremium"
+                      type="number"
+                      value={actualPremium}
+                      onChange={(e) => setActualPremium(e.target.value)}
+                      placeholder={(application.recommendedPremium || recommendedPremium) ? `Recommended: ₹${application.recommendedPremium || recommendedPremium}` : 'Enter premium amount'}
+                    />
+                    {(application.recommendedPremium || recommendedPremium) && (
+                      <p className="text-xs text-green-700">
+                        Recommended: ₹{application.recommendedPremium || recommendedPremium}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleSetActualPremium}
+                      disabled={loading}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      {loading ? 'Saving...' : 'Save Premium'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setEditingPremium(false)
+                        setActualPremium(application.actualPremium?.toString() || '')
+                      }}
+                      disabled={loading}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                application.actualPremium ? (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-green-700">Actual Premium Set:</span>
+                    <p className="text-2xl font-bold text-green-900">₹{application.actualPremium}</p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-green-600">Click "Set Premium" to manually enter the premium amount</p>
+                )
+              )}
+            </div>
           </div>
 
           <Separator />
