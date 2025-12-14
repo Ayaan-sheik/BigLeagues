@@ -26,6 +26,14 @@ export async function POST(request) {
     const { db } = await connectToDatabase();
     const body = await request.json();
 
+    // Basic validation
+    if (body.coverageMin && body.coverageMax && body.coverageMin > body.coverageMax) {
+      return NextResponse.json(
+        { error: 'Coverage minimum cannot be greater than coverage maximum' },
+        { status: 400 }
+      );
+    }
+
     const { v4: uuidv4 } = await import('uuid');
     const product = {
       id: uuidv4(),
