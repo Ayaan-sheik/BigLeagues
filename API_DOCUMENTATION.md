@@ -1,8 +1,8 @@
-# 🔌 Vandage API Documentation
+# 🔌 Vantage API Documentation
 
 ## Overview
 
-The Vandage API allows customers to programmatically access their insurance policy and premium information. This API uses API key authentication and returns data in JSON format.
+The Vantage API allows customers to programmatically access their insurance policy and premium information. This API uses API key authentication and returns data in JSON format.
 
 ---
 
