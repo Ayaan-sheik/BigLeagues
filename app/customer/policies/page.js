@@ -106,7 +106,7 @@ export default function PoliciesPage() {
                     <div>
                       <CardTitle className="text-lg">{policy.productName}</CardTitle>
                       <CardDescription className="mt-1">
-                        Application #{policy.applicationNumber}
+                        Service ID: {policy.applicationNumber}
                       </CardDescription>
                       {policy.companyName && (
                         <p className="text-xs text-gray-500 mt-1">{policy.companyName}</p>
