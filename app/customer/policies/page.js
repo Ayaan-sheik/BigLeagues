@@ -81,46 +81,107 @@ export default function PoliciesPage() {
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {policies.map((policy) => (
-            <Card key={policy.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle>{policy.productName}</CardTitle>
-                    <CardDescription>Policy #{policy.policyNumber}</CardDescription>
+          {policies.map((policy) => {
+            // Determine badge color based on status
+            const getBadgeVariant = (status) => {
+              if (status === 'active') return 'default'
+              if (status === 'rejected') return 'destructive'
+              if (status === 'pending') return 'secondary'
+              if (status === 'info_required') return 'outline'
+              return 'secondary'
+            }
+
+            const getStatusDisplay = (status) => {
+              if (status === 'active') return 'Approved'
+              if (status === 'rejected') return 'Rejected'
+              if (status === 'pending') return 'Under Review'
+              if (status === 'info_required') return 'Info Required'
+              return 'Pending'
+            }
+
+            return (
+              <Card key={policy.id} className={policy.status === 'rejected' ? 'border-red-200' : ''}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-lg">{policy.productName}</CardTitle>
+                      <CardDescription className="mt-1">
+                        Application #{policy.applicationNumber}
+                      </CardDescription>
+                      {policy.companyName && (
+                        <p className="text-xs text-gray-500 mt-1">{policy.companyName}</p>
+                      )}
+                    </div>
+                    <Badge 
+                      variant={getBadgeVariant(policy.status)}
+                      className={
+                        policy.status === 'active' ? 'bg-green-100 text-green-800' :
+                        policy.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                        policy.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-blue-100 text-blue-800'
+                      }
+                    >
+                      {getStatusDisplay(policy.status)}
+                    </Badge>
                   </div>
-                  <Badge variant={policy.status === 'active' ? 'success' : 'default'}>
-                    {policy.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <p className="text-sm text-gray-600">Coverage Amount</p>
-                  <p className="text-2xl font-bold">₹{(policy.coverageAmount / 100000).toFixed(1)}L</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Premium</p>
-                    <p className="font-semibold">₹{policy.premiumAmount}/month</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-600">Coverage Amount</p>
+                      <p className="text-lg font-bold">₹{policy.coverageAmount ? (policy.coverageAmount / 100000).toFixed(1) : '0'}L</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Premium</p>
+                      <p className="text-lg font-bold">₹{policy.premium || 0}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-gray-600">Deductible</p>
-                    <p className="font-semibold">₹{policy.deductible}</p>
+
+                  {policy.status === 'rejected' && policy.underwriterNotes && (
+                    <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                      <p className="text-xs font-semibold text-red-800 mb-1">Rejection Reason:</p>
+                      <p className="text-xs text-red-700">{policy.underwriterNotes}</p>
+                    </div>
+                  )}
+
+                  {policy.status === 'info_required' && policy.underwriterNotes && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                      <p className="text-xs font-semibold text-blue-800 mb-1">Required Information:</p>
+                      <p className="text-xs text-blue-700">{policy.underwriterNotes}</p>
+                    </div>
+                  )}
+
+                  {policy.status === 'active' && (
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="flex-1">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download Policy
+                      </Button>
+                      <Button variant="outline" size="sm" className="flex-1">
+                        View Details
+                      </Button>
+                    </div>
+                  )}
+
+                  {(policy.status === 'pending' || policy.status === 'info_required') && (
+                    <div className="bg-gray-50 rounded-md p-3">
+                      <p className="text-xs text-gray-600">
+                        Your application is being reviewed. You'll be notified once a decision is made.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="text-xs text-gray-500 pt-2 border-t">
+                    Applied: {new Date(policy.createdAt).toLocaleDateString('en-IN', { 
+                      day: 'numeric', 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })}
                   </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    View Details
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       )}
     </div>
