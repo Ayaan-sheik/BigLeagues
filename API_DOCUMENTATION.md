@@ -1,8 +1,8 @@
-# 🔌 InsureInfra API Documentation
+# 🔌 Vandage API Documentation
 
 ## Overview
 
-The InsureInfra API allows customers to programmatically access their insurance policy and premium information. This API uses API key authentication and returns data in JSON format.
+The Vandage API allows customers to programmatically access their insurance policy and premium information. This API uses API key authentication and returns data in JSON format.
 
 ---
 
