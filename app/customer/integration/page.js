@@ -150,7 +150,7 @@ export default function IntegrationPage() {
       <Card>
         <CardHeader>
           <CardTitle>API Documentation</CardTitle>
-          <CardDescription>Learn how to integrate with InsureInfra API</CardDescription>
+          <CardDescription>Learn how to integrate with Vandage API</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
