@@ -18,7 +18,19 @@ export async function GET(request) {
       .find({ userId: session.user.id })
       .toArray()
     
-    // Fetch transactions
+    // Fetch applications (which represent policies)
+    const applications = await db.collection('applications')
+      .find({ userId: session.user.id })
+      .toArray()
+    
+    // Fetch payments (new payment tracking)
+    const payments = await db.collection('customer_payments')
+      .find({ userId: session.user.id })
+      .sort({ created_at: -1 })
+      .limit(5)
+      .toArray()
+    
+    // Fetch transactions (legacy)
     const transactions = await db.collection('transactions')
       .find({ userId: session.user.id })
       .sort({ date: -1 })
@@ -33,18 +45,21 @@ export async function GET(request) {
       .toArray()
     
     // Calculate stats
-    const totalCoverage = policies
-      .filter(p => p.status === 'active')
-      .reduce((sum, p) => sum + (p.coverageAmount || 0), 0)
+    const totalCoverage = applications
+      .filter(p => p.status === 'approved')
+      .reduce((sum, p) => sum + (p.coverageAmount || p.requestedCoverage || 0), 0)
     
-    const activePolicies = policies.filter(p => p.status === 'active').length
+    const activePolicies = applications.filter(p => p.status === 'approved').length
     
-    // Calculate MTD premium
+    // Calculate MTD premium from payments
     const now = new Date()
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    const premiumPaidMTD = transactions
-      .filter(t => new Date(t.date) >= startOfMonth)
-      .reduce((sum, t) => sum + (t.premiumAmount || 0), 0)
+    const premiumPaidMTD = payments
+      .filter(p => new Date(p.created_at) >= startOfMonth)
+      .reduce((sum, p) => sum + (p.premium_amount || 0), 0)
+    
+    // Calculate total revenue from payments
+    const totalRevenue = payments.reduce((sum, p) => sum + (p.total_amount || 0), 0)
     
     // Get startup profile for risk score
     const profile = await db.collection('startup_profiles')
