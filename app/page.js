@@ -204,8 +204,13 @@ export default function LandingPage() {
               <button
                 type="button"
                 onClick={() => scrollToId('top')}
-                className="font-semibold text-gray-900"
+                className="font-semibold text-gray-900 flex items-center gap-2"
               >
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_omniguard/artifacts/gn6fyivl_image.png" 
+                  alt="Vantage Logo" 
+                  className="h-6 w-6"
+                />
                 Vantage
               </button>
               <div className="hidden sm:flex gap-6 text-sm font-medium text-gray-600">
