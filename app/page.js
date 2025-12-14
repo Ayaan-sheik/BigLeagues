@@ -141,9 +141,13 @@ function MockupSVG({ title = 'Product mockup', subtitle = 'Risk engine • premi
   )
 }
 
-function scrollToId(id) {
+function scrollToId(id, offset = 0) {
   const el = document.getElementById(id)
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  if (el) {
+    const elementPosition = el.getBoundingClientRect().top + window.pageYOffset
+    const offsetPosition = elementPosition - offset
+    window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
+  }
 }
 
 // --- Main Page Component ---
