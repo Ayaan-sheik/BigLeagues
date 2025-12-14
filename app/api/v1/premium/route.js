@@ -22,6 +22,11 @@ export async function GET(request) {
 
     const apiKey = authHeader.replace('Bearer ', '')
 
+    // Get query parameters for filtering
+    const { searchParams } = new URL(request.url)
+    const serviceIdFilter = searchParams.get('serviceId') // Filter by service ID
+    const premiumFilter = searchParams.get('premium') // Filter by premium amount
+
     // Validate API key and get user
     const db = await getDb()
     const profile = await db.collection('startup_profiles')
@@ -37,18 +42,36 @@ export async function GET(request) {
       )
     }
 
+    // Build query filter
+    const query = { 
+      userId: profile.userId,
+      status: 'approved' // Only show approved policies
+    }
+
+    // Add service ID filter if provided
+    if (serviceIdFilter) {
+      query.applicationNumber = serviceIdFilter
+    }
+
     // Get user's applications (approved policies)
-    const applications = await db.collection('applications')
-      .find({ 
-        userId: profile.userId,
-        status: 'approved' // Only show approved policies
-      })
+    let applications = await db.collection('applications')
+      .find(query)
       .sort({ createdAt: -1 })
       .toArray()
 
-    // Format response
+    // Apply premium filter if provided
+    if (premiumFilter) {
+      const premiumAmount = parseInt(premiumFilter)
+      if (!isNaN(premiumAmount)) {
+        applications = applications.filter(app => 
+          (app.actualPremium || app.recommendedPremium) === premiumAmount
+        )
+      }
+    }
+
+    // Format response with serviceId instead of applicationNumber
     const premiumData = applications.map(app => ({
-      applicationNumber: app.applicationNumber,
+      serviceId: app.applicationNumber, // Renamed from applicationNumber
       productName: app.productName,
       productId: app.productId,
       companyName: app.companyName,
