@@ -42,7 +42,6 @@ function SidebarContent({ closeMobile }) {
       {/* Logo/Brand */}
       <div className="flex h-16 items-center border-b px-6 bg-[#37322F]">
         <Link href="/" className="flex items-center gap-2 font-semibold text-[#F7F5F3]">
-          <Shield className="h-6 w-6 text-orange-500" />
           <div className="flex items-center gap-2">
             <img 
               src="https://customer-assets.emergentagent.com/job_omniguard/artifacts/uq2d89zx_Gemini_Generated_Image_jznqkljznqkljznq-removebg-preview.png" 
