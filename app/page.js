@@ -296,6 +296,9 @@ export default function LandingPage() {
 
           {/* 3. The Solution */}
           <Section className="bg-white" id="solution">
+            <div className="absolute top-4 right-4 opacity-10">
+              <Layers size={80} />
+            </div>
             <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="flex-1">
                 <h2 className="text-3xl font-semibold mb-6">A risk-transfer engine with zero upfront cost.</h2>
