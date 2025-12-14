@@ -236,6 +236,7 @@ CUSTOMER LOGIN
 
 ### Method 2: Automated Testing
 
+**Test 1: Data Flow Test**
 ```bash
 cd /app && node test-data-flow.js
 ```
@@ -246,6 +247,18 @@ This script verifies:
 - ✅ Applications reference valid products
 - ✅ Applications reference valid users
 - ✅ Data integrity across collections
+
+**Test 2: Approval Flow Test**
+```bash
+cd /app && node test-approval-flow.js
+```
+
+This script verifies:
+- ✅ Applications can be updated by admin
+- ✅ Status changes are persisted to database
+- ✅ Customer view correctly maps application statuses
+- ✅ Application numbers are preserved
+- ✅ Underwriter notes are saved and displayed
 
 ## 🎯 Key Takeaways
 
