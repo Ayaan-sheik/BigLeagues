@@ -263,7 +263,8 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Role-based route protection for admin and customer routes"
   stuck_tasks:
     - "Password reset flow (forgot-password and reset-password pages)"
   test_all: false
