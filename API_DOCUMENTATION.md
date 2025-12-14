@@ -320,7 +320,7 @@ If you exceed rate limits, you'll receive a `429 Too Many Requests` response.
 ## 📞 Support
 
 For API support, please contact:
-- **Email**: support@vandage.com
+- **Email**: support@vantage.com
 - **Dashboard**: Navigate to Support section
 - **Documentation**: Check `/customer/integration` page
 
