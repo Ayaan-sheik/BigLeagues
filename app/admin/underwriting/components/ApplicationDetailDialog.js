@@ -55,58 +55,6 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
     }
   }
 
-  async function handleCalculatePremium() {
-    if (!selectedProductId) {
-      toast({
-        title: 'Validation Error',
-        description: 'Please select a product first',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    setCalculating(true)
-    try {
-      const res = await fetch('/api/admin/calculate-premium', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          applicationId: application.id,
-          productId: selectedProductId,
-        }),
-      })
-
-      if (!res.ok) throw new Error('Failed to calculate premium')
-      
-      const data = await res.json()
-      setRecommendedPremium(data.recommendedPremium)
-      
-      // Also update the application with recommended premium
-      await fetch(`/api/admin/applications/${application.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productId: selectedProductId,
-          recommendedPremium: data.recommendedPremium,
-        }),
-      })
-
-      toast({
-        title: 'Success',
-        description: `Recommended premium: ₹${data.recommendedPremium}`,
-      })
-    } catch (err) {
-      console.error(err)
-      toast({
-        title: 'Error',
-        description: err.message,
-        variant: 'destructive',
-      })
-    } finally {
-      setCalculating(false)
-    }
-  }
-
   async function handleSetActualPremium() {
     if (!actualPremium || isNaN(parseInt(actualPremium))) {
       toast({
