@@ -295,7 +295,7 @@ export default function LandingPage() {
           </Section>
 
           {/* 3. The Solution */}
-          <Section className="bg-white" id="solution">
+          <Section className="bg-white relative" id="solution">
             <div className="absolute top-4 right-4 opacity-10">
               <Layers size={80} />
             </div>
