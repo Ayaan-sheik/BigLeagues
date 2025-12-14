@@ -22,6 +22,7 @@ export default function ProductsPage() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(true)
   const [products, setProducts] = useState([])
+  const [editingProduct, setEditingProduct] = useState(null)
 
   useEffect(() => {
     fetchProducts()
