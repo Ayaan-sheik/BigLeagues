@@ -110,7 +110,7 @@ axios(config)
     "companyName": "TechStart Solutions",
     "policies": [
       {
-        "applicationNumber": "APP-1765692230910-A7JRWR",
+        "serviceId": "APP-1765692230910-A7JRWR",
         "productName": "Product Liability Insurance",
         "productId": "40f68f97-ae17-49a4-bfe1-432ec5648cc5",
         "companyName": "TechStart Solutions",
@@ -141,7 +141,7 @@ axios(config)
 | `success` | boolean | Indicates if the request was successful |
 | `data.companyName` | string | Name of the customer's company |
 | `data.policies` | array | Array of approved policy objects |
-| `data.policies[].applicationNumber` | string | Unique application/policy number |
+| `data.policies[].serviceId` | string | Unique application/policy number |
 | `data.policies[].productName` | string | Name of the insurance product |
 | `data.policies[].productId` | string | Unique identifier for the product |
 | `data.policies[].companyName` | string | Customer's company name |
@@ -224,11 +224,11 @@ data = response.json()['data']
 # Export to CSV
 with open('premium_report.csv', 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(['Application Number', 'Product', 'Premium', 'Coverage'])
+    writer.writerow(['Service ID', 'Product', 'Premium', 'Coverage'])
     
     for policy in data['policies']:
         writer.writerow([
-            policy['applicationNumber'],
+            policy['serviceId'],
             policy['productName'],
             policy['premium']['actual'],
             policy['coverageAmount']
