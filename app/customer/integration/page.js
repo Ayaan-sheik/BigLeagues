@@ -149,42 +149,6 @@ export default function IntegrationPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plug className="h-5 w-5" />
-            Webhooks
-          </CardTitle>
-          <CardDescription>
-            Receive real-time notifications about claims, payments, and policy updates
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label>Webhook URL</Label>
-            <Input
-              value={webhookUrl}
-              onChange={(e) => setWebhookUrl(e.target.value)}
-              placeholder="https://your-domain.com/webhooks/insureinfra"
-              className="mt-2"
-            />
-          </div>
-
-          <Button onClick={updateWebhook}>
-            Save Webhook URL
-          </Button>
-
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="font-semibold text-blue-900 mb-2">Webhook Events</h4>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• <code className="bg-blue-100 px-1 rounded">claim.updated</code> - When a claim status changes</li>
-              <li>• <code className="bg-blue-100 px-1 rounded">policy.activated</code> - When a policy becomes active</li>
-              <li>• <code className="bg-blue-100 px-1 rounded">payment.received</code> - When a premium payment is processed</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
           <CardTitle>API Documentation</CardTitle>
           <CardDescription>Learn how to integrate with InsureInfra API</CardDescription>
         </CardHeader>
