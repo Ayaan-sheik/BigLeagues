@@ -44,7 +44,7 @@ function SidebarContent({ closeMobile }) {
       <div className="flex h-16 items-center border-b px-6 bg-[#37322F]">
         <Link href="/" className="flex items-center gap-2 font-semibold text-[#F7F5F3]">
           <Shield className="h-6 w-6 text-orange-500" />
-          <span className="text-lg">InsureInfra</span>
+          <span className="text-lg">Vandage</span>
         </Link>
       </div>
 
