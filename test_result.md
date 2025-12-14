@@ -287,11 +287,11 @@ test_plan:
 
   - task: "Admin product creation functionality"
     implemented: true
-    working: "NA"
+    working: false
     file: "app/admin/products/page.js, app/admin/products/components/AddProductDialog.js, app/api/admin/products/route.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -299,6 +299,9 @@ test_plan:
       - working: "NA"
         agent: "main"
         comment: "✅ ALREADY IMPLEMENTED! Found existing implementation: (1) AddProductDialog component with full form (name, description, basePrice, coverageMin, coverageMax, status), (2) POST /api/admin/products endpoint with UUID generation and audit logging, (3) Full validation for min/max coverage, (4) Integration with products page and refetch on success. Need to test the functionality."
+      - working: false
+        agent: "testing"
+        comment: "❌ ADMIN PRODUCT CREATION BLOCKED BY AUTHENTICATION ISSUE. Testing revealed: (1) ✅ API endpoints exist and properly protected with 401 responses, (2) ✅ Database connectivity working - admin accounts seeded successfully, (3) ✅ Product creation API structure validated, (4) ✅ UUID generation and audit logging implemented, (5) ❌ CRITICAL ISSUE: Admin login failing due to database name mismatch - fixed lib/db.js to use 'insureinfra' instead of 'insureinfra_db', (6) ❌ NextAuth redirect logic not working - login succeeds but redirects to home page instead of /admin, (7) Cannot test product creation functionality without proper admin authentication. REQUIRES: Fix NextAuth redirect configuration and middleware for admin role-based routing."
 
 agent_communication:
   - agent: "main"
