@@ -123,7 +123,7 @@ export default function RegisterPage() {
               <Shield className="w-8 h-8 text-orange-500" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Create Account</h1>
-            <p className="text-gray-600">Join InsureInfra today</p>
+            <p className="text-gray-600">Join Vandage today</p>
           </div>
 
           {/* Error/Success Messages */}

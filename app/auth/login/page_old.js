@@ -63,7 +63,7 @@ export default function LoginPage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
               <h1 className="text-3xl font-bold text-gray-900">
-                InsureInfra
+                Vandage
               </h1>
             </Link>
             <p className="text-gray-500 mt-2 text-sm">Welcome back</p>

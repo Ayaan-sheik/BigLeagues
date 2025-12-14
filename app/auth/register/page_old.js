@@ -123,7 +123,7 @@ export default function RegisterPage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
               <h1 className="text-3xl font-bold text-gray-900">
-                InsureInfra
+                Vandage
               </h1>
             </Link>
             <p className="text-gray-500 mt-2 text-sm">Create your account</p>
@@ -208,7 +208,7 @@ export default function RegisterPage() {
                   <User className="w-6 h-6 text-gray-700 mb-2" />
                   <p className="text-sm font-semibold text-gray-900 mb-1">Customer</p>
                   <p className="text-xs text-gray-500 leading-relaxed">
-                    Standard access for using InsureInfra services
+                    Standard access for using Vandage services
                   </p>
                 </button>
 
