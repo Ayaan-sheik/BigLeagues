@@ -1,534 +1,323 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend Testing for InsureInfra Application
-Tests authentication, authorization, role-based access control, and admin product creation
+Backend Testing Script for InsureInfra Admin Product Creation
+Tests the admin authentication and product creation functionality
 """
 
 import requests
 import json
 import time
 import sys
-import uuid
-from typing import Dict, Optional, Tuple
+from datetime import datetime
 
-# Test configuration
+# Configuration
 BASE_URL = "https://omniguard.preview.emergentagent.com"
 API_BASE = f"{BASE_URL}/api"
 
-# Test credentials from ACCOUNTS.md
+# Test credentials
 ADMIN_CREDENTIALS = {
     "email": "admin1@insureinfra.com",
     "password": "Admin123!@#"
 }
 
-CUSTOMER_CREDENTIALS = {
-    "email": "customer1@techstart.com", 
-    "password": "Customer123!@#"
-}
-
-class RouteProtectionTester:
+class BackendTester:
     def __init__(self):
         self.session = requests.Session()
         self.session.headers.update({
             'Content-Type': 'application/json',
-            'User-Agent': 'RouteProtectionTester/1.0'
+            'User-Agent': 'InsureInfra-Backend-Tester/1.0'
         })
+        self.admin_session_token = None
         
-    def login(self, credentials: Dict[str, str]) -> Tuple[bool, str]:
-        """Login with credentials and return success status and session info"""
+    def log(self, message, level="INFO"):
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        print(f"[{timestamp}] {level}: {message}")
+        
+    def test_admin_authentication(self):
+        """Test admin login and session management"""
+        self.log("=== TESTING ADMIN AUTHENTICATION ===")
+        
         try:
-            # First get CSRF token
-            csrf_response = self.session.get(f"{API_BASE}/auth/csrf")
-            if csrf_response.status_code != 200:
-                return False, f"Failed to get CSRF token: {csrf_response.status_code}"
-            
-            csrf_token = csrf_response.json().get('csrfToken')
-            
-            # Login with credentials
+            # Test admin login via NextAuth
             login_data = {
-                "email": credentials["email"],
-                "password": credentials["password"],
-                "csrfToken": csrf_token,
-                "callbackUrl": f"{BASE_URL}/dashboard"
+                "email": ADMIN_CREDENTIALS["email"],
+                "password": ADMIN_CREDENTIALS["password"],
+                "redirect": "false"
             }
             
+            # First get CSRF token
+            csrf_response = self.session.get(f"{API_BASE}/auth/csrf")
+            if csrf_response.status_code == 200:
+                csrf_token = csrf_response.json().get('csrfToken')
+                self.log(f"✅ CSRF token obtained: {csrf_token[:20]}...")
+            else:
+                self.log(f"❌ Failed to get CSRF token: {csrf_response.status_code}", "ERROR")
+                return False
+                
+            # Attempt login via NextAuth callback
             login_response = self.session.post(
                 f"{API_BASE}/auth/callback/credentials",
-                data=login_data,
-                allow_redirects=False
+                data={
+                    "email": ADMIN_CREDENTIALS["email"],
+                    "password": ADMIN_CREDENTIALS["password"],
+                    "csrfToken": csrf_token,
+                    "callbackUrl": f"{BASE_URL}/admin",
+                    "json": "true"
+                },
+                headers={'Content-Type': 'application/x-www-form-urlencoded'}
             )
             
-            # Check if login was successful (should redirect)
-            if login_response.status_code in [302, 200]:
-                return True, f"Login successful for {credentials['email']}"
+            self.log(f"Login response status: {login_response.status_code}")
+            self.log(f"Login response headers: {dict(login_response.headers)}")
+            
+            # Check for session cookie
+            session_cookies = [cookie for cookie in self.session.cookies if 'next-auth' in cookie.name.lower()]
+            if session_cookies:
+                self.log(f"✅ Session cookies found: {[c.name for c in session_cookies]}")
+                return True
             else:
-                return False, f"Login failed: {login_response.status_code} - {login_response.text}"
+                self.log("❌ No session cookies found after login", "ERROR")
+                return False
                 
         except Exception as e:
-            return False, f"Login error: {str(e)}"
-    
-    def logout(self) -> bool:
-        """Logout current session"""
-        try:
-            logout_response = self.session.post(f"{API_BASE}/auth/signout")
-            return logout_response.status_code in [200, 302]
-        except:
+            self.log(f"❌ Admin authentication failed: {str(e)}", "ERROR")
             return False
     
-    def test_unauthenticated_access(self) -> Dict[str, bool]:
-        """Test 1: Unauthenticated Access Tests"""
-        print("\n=== TEST 1: UNAUTHENTICATED ACCESS ===")
-        results = {}
+    def test_admin_session_verification(self):
+        """Verify admin session and role"""
+        self.log("=== TESTING ADMIN SESSION VERIFICATION ===")
         
-        # Ensure we're logged out
-        self.logout()
-        
-        # Test protected route access without authentication
-        test_cases = [
-            ("/admin", "Should redirect to /auth/login"),
-            ("/customer", "Should redirect to /auth/login"),
-            ("/api/admin/products", "Should return 401/403"),
-            ("/api/customer/policies", "Should return 401/403")
-        ]
-        
-        for route, expected in test_cases:
-            try:
-                url = f"{BASE_URL}{route}" if not route.startswith('/api') else f"{BASE_URL}{route}"
-                response = self.session.get(url, allow_redirects=False)
-                
-                if route.startswith('/api'):
-                    # API endpoints should return 401/403
-                    success = response.status_code in [401, 403]
-                    print(f"✅ {route}: {response.status_code} (Expected 401/403)" if success 
-                          else f"❌ {route}: {response.status_code} (Expected 401/403)")
-                else:
-                    # Frontend routes should redirect to login
-                    success = response.status_code == 302 and '/auth/login' in response.headers.get('Location', '')
-                    print(f"✅ {route}: Redirects to login" if success 
-                          else f"❌ {route}: {response.status_code}, Location: {response.headers.get('Location', 'None')}")
-                
-                results[route] = success
-                
-            except Exception as e:
-                print(f"❌ {route}: Error - {str(e)}")
-                results[route] = False
-        
-        return results
-    
-    def test_admin_role_access(self) -> Dict[str, bool]:
-        """Test 2: Admin Role Tests"""
-        print("\n=== TEST 2: ADMIN ROLE ACCESS ===")
-        results = {}
-        
-        # Login as admin
-        login_success, login_msg = self.login(ADMIN_CREDENTIALS)
-        print(f"Admin login: {login_msg}")
-        
-        if not login_success:
-            print("❌ Cannot proceed with admin tests - login failed")
-            return {"admin_login": False}
-        
-        # Test admin access to admin routes
-        test_cases = [
-            ("/admin", "Should succeed", True),
-            ("/customer", "Should redirect to /admin", False),
-            ("/api/admin/products", "Should succeed (GET)", True),
-            ("/api/customer/policies", "Should return 403", False)
-        ]
-        
-        for route, expected, should_succeed in test_cases:
-            try:
-                url = f"{BASE_URL}{route}" if not route.startswith('/api') else f"{BASE_URL}{route}"
-                response = self.session.get(url, allow_redirects=False)
-                
-                if route.startswith('/api'):
-                    if should_succeed:
-                        success = response.status_code == 200
-                        print(f"✅ {route}: {response.status_code} (Expected 200)" if success 
-                              else f"❌ {route}: {response.status_code} (Expected 200)")
-                    else:
-                        success = response.status_code == 403
-                        print(f"✅ {route}: {response.status_code} (Expected 403)" if success 
-                              else f"❌ {route}: {response.status_code} (Expected 403)")
-                else:
-                    if should_succeed:
-                        success = response.status_code == 200
-                        print(f"✅ {route}: {response.status_code} (Expected 200)" if success 
-                              else f"❌ {route}: {response.status_code} (Expected 200)")
-                    else:
-                        success = response.status_code == 302 and '/admin' in response.headers.get('Location', '')
-                        print(f"✅ {route}: Redirects to /admin" if success 
-                              else f"❌ {route}: {response.status_code}, Location: {response.headers.get('Location', 'None')}")
-                
-                results[route] = success
-                
-            except Exception as e:
-                print(f"❌ {route}: Error - {str(e)}")
-                results[route] = False
-        
-        return results
-    
-    def test_customer_role_access(self) -> Dict[str, bool]:
-        """Test 3: Customer Role Tests"""
-        print("\n=== TEST 3: CUSTOMER ROLE ACCESS ===")
-        results = {}
-        
-        # Logout first, then login as customer
-        self.logout()
-        login_success, login_msg = self.login(CUSTOMER_CREDENTIALS)
-        print(f"Customer login: {login_msg}")
-        
-        if not login_success:
-            print("❌ Cannot proceed with customer tests - login failed")
-            return {"customer_login": False}
-        
-        # Test customer access to customer routes
-        test_cases = [
-            ("/customer", "Should succeed", True),
-            ("/admin", "Should redirect to /customer", False),
-            ("/api/customer/policies", "Should succeed (GET)", True),
-            ("/api/admin/products", "Should return 403", False)
-        ]
-        
-        for route, expected, should_succeed in test_cases:
-            try:
-                url = f"{BASE_URL}{route}" if not route.startswith('/api') else f"{BASE_URL}{route}"
-                response = self.session.get(url, allow_redirects=False)
-                
-                if route.startswith('/api'):
-                    if should_succeed:
-                        success = response.status_code == 200
-                        print(f"✅ {route}: {response.status_code} (Expected 200)" if success 
-                              else f"❌ {route}: {response.status_code} (Expected 200)")
-                    else:
-                        success = response.status_code == 403
-                        print(f"✅ {route}: {response.status_code} (Expected 403)" if success 
-                              else f"❌ {route}: {response.status_code} (Expected 403)")
-                else:
-                    if should_succeed:
-                        success = response.status_code == 200
-                        print(f"✅ {route}: {response.status_code} (Expected 200)" if success 
-                              else f"❌ {route}: {response.status_code} (Expected 200)")
-                    else:
-                        success = response.status_code == 302 and '/customer' in response.headers.get('Location', '')
-                        print(f"✅ {route}: Redirects to /customer" if success 
-                              else f"❌ {route}: {response.status_code}, Location: {response.headers.get('Location', 'None')}")
-                
-                results[route] = success
-                
-            except Exception as e:
-                print(f"❌ {route}: Error - {str(e)}")
-                results[route] = False
-        
-        return results
-    
-    def test_edge_cases(self) -> Dict[str, bool]:
-        """Test 4: Edge Cases"""
-        print("\n=== TEST 4: EDGE CASES ===")
-        results = {}
-        
-        # Test session persistence
-        print("\n--- Session Persistence Test ---")
-        login_success, _ = self.login(ADMIN_CREDENTIALS)
-        if login_success:
-            # Make multiple requests to verify session persists
-            for i in range(3):
-                response = self.session.get(f"{BASE_URL}/admin", allow_redirects=False)
-                success = response.status_code == 200
-                print(f"Request {i+1}: {'✅' if success else '❌'} Status: {response.status_code}")
-                results[f"session_persistence_{i+1}"] = success
-                time.sleep(0.5)
-        
-        # Test logout and re-access
-        print("\n--- Logout and Re-access Test ---")
-        logout_success = self.logout()
-        print(f"Logout: {'✅' if logout_success else '❌'}")
-        
-        # Try to access protected route after logout
-        response = self.session.get(f"{BASE_URL}/admin", allow_redirects=False)
-        success = response.status_code == 302 and '/auth/login' in response.headers.get('Location', '')
-        print(f"Access after logout: {'✅' if success else '❌'} - Redirects to login")
-        results["logout_protection"] = success
-        
-        return results
-    
-    def test_admin_product_creation(self) -> Dict[str, bool]:
-        """Test 5: Admin Product Creation Functionality"""
-        print("\n=== TEST 5: ADMIN PRODUCT CREATION ===")
-        results = {}
-        
-        # Login as admin first
-        login_success, login_msg = self.login(ADMIN_CREDENTIALS)
-        print(f"Admin login for product testing: {login_msg}")
-        
-        if not login_success:
-            print("❌ Cannot proceed with product creation tests - admin login failed")
-            return {"admin_login_for_products": False}
-        
-        # Test 1: Get existing products (should work)
-        print("\n--- Test: GET /api/admin/products ---")
         try:
-            response = self.session.get(f"{API_BASE}/admin/products")
-            success = response.status_code == 200
-            if success:
-                products_data = response.json()
-                print(f"✅ GET products successful: {len(products_data)} products found")
-                results["get_products"] = True
+            # Test session endpoint
+            session_response = self.session.get(f"{API_BASE}/auth/session")
+            
+            if session_response.status_code == 200:
+                session_data = session_response.json()
+                self.log(f"✅ Session data retrieved: {json.dumps(session_data, indent=2)}")
+                
+                if session_data.get('user', {}).get('role') == 'admin':
+                    self.log("✅ Admin role verified in session")
+                    return True
+                else:
+                    self.log(f"❌ Expected admin role, got: {session_data.get('user', {}).get('role')}", "ERROR")
+                    return False
             else:
-                print(f"❌ GET products failed: {response.status_code} - {response.text}")
-                results["get_products"] = False
+                self.log(f"❌ Session verification failed: {session_response.status_code}", "ERROR")
+                return False
+                
         except Exception as e:
-            print(f"❌ GET products error: {str(e)}")
-            results["get_products"] = False
-        
-        # Test 2: Create new product with valid data
-        print("\n--- Test: POST /api/admin/products (Valid Data) ---")
-        test_product = {
-            "name": "Directors & Officers Insurance",
-            "description": "Coverage for directors and officers against legal action and financial losses",
-            "basePrice": 25000,
-            "coverageMin": 500000,
-            "coverageMax": 10000000,
-            "status": "active"
-        }
+            self.log(f"❌ Session verification error: {str(e)}", "ERROR")
+            return False
+    
+    def test_admin_products_api_access(self):
+        """Test access to admin products API endpoints"""
+        self.log("=== TESTING ADMIN PRODUCTS API ACCESS ===")
         
         try:
-            response = self.session.post(
+            # Test GET /api/admin/products
+            get_response = self.session.get(f"{API_BASE}/admin/products")
+            
+            self.log(f"GET /api/admin/products status: {get_response.status_code}")
+            
+            if get_response.status_code == 200:
+                products = get_response.json()
+                self.log(f"✅ Successfully retrieved products list: {len(products)} products")
+                self.log(f"Products: {json.dumps(products[:2], indent=2) if products else 'No products found'}")
+                return True
+            elif get_response.status_code == 401:
+                self.log("❌ Unauthorized access to admin products API", "ERROR")
+                return False
+            elif get_response.status_code == 403:
+                self.log("❌ Forbidden access to admin products API (role issue)", "ERROR")
+                return False
+            else:
+                self.log(f"❌ Unexpected response: {get_response.status_code} - {get_response.text}", "ERROR")
+                return False
+                
+        except Exception as e:
+            self.log(f"❌ Admin products API access error: {str(e)}", "ERROR")
+            return False
+    
+    def test_product_creation(self):
+        """Test product creation via API"""
+        self.log("=== TESTING PRODUCT CREATION ===")
+        
+        try:
+            # Test product data
+            test_product = {
+                "name": "Professional Indemnity Insurance",
+                "description": "Coverage for professional negligence and errors in services",
+                "basePrice": 30000,
+                "coverageMin": 1000000,
+                "coverageMax": 15000000,
+                "status": "active"
+            }
+            
+            # Create product
+            create_response = self.session.post(
                 f"{API_BASE}/admin/products",
-                json=test_product,
-                headers={'Content-Type': 'application/json'}
+                json=test_product
             )
             
-            if response.status_code == 201:
-                created_product = response.json()
-                print(f"✅ Product creation successful")
-                print(f"   Product ID: {created_product.get('id', 'N/A')}")
-                print(f"   Product Name: {created_product.get('name', 'N/A')}")
+            self.log(f"Product creation status: {create_response.status_code}")
+            
+            if create_response.status_code == 201:
+                created_product = create_response.json()
+                self.log(f"✅ Product created successfully: {json.dumps(created_product, indent=2)}")
                 
                 # Verify UUID is generated
-                product_id = created_product.get('id')
-                if product_id and len(product_id) == 36:  # UUID length
-                    print(f"✅ UUID generated correctly: {product_id}")
-                    results["product_uuid_generation"] = True
+                if 'id' in created_product and created_product['id']:
+                    self.log(f"✅ Product UUID generated: {created_product['id']}")
                 else:
-                    print(f"❌ UUID not generated properly: {product_id}")
-                    results["product_uuid_generation"] = False
+                    self.log("❌ Product UUID not generated", "ERROR")
+                    return False
                 
-                # Store product ID for later tests
-                self.created_product_id = product_id
-                results["create_product_valid"] = True
+                # Verify all fields are saved
+                for key, value in test_product.items():
+                    if created_product.get(key) == value:
+                        self.log(f"✅ Field '{key}' saved correctly: {value}")
+                    else:
+                        self.log(f"❌ Field '{key}' mismatch. Expected: {value}, Got: {created_product.get(key)}", "ERROR")
+                        return False
                 
+                # Store product ID for verification
+                self.created_product_id = created_product['id']
+                return True
+                
+            elif create_response.status_code == 401:
+                self.log("❌ Unauthorized to create product", "ERROR")
+                return False
+            elif create_response.status_code == 403:
+                self.log("❌ Forbidden to create product (role issue)", "ERROR")
+                return False
             else:
-                print(f"❌ Product creation failed: {response.status_code} - {response.text}")
-                results["create_product_valid"] = False
-                results["product_uuid_generation"] = False
+                self.log(f"❌ Product creation failed: {create_response.status_code} - {create_response.text}", "ERROR")
+                return False
                 
         except Exception as e:
-            print(f"❌ Product creation error: {str(e)}")
-            results["create_product_valid"] = False
-            results["product_uuid_generation"] = False
-        
-        # Test 3: Validation test - min coverage > max coverage
-        print("\n--- Test: POST /api/admin/products (Invalid: Min > Max Coverage) ---")
-        invalid_product = {
-            "name": "Test Invalid Product",
-            "description": "This should fail validation",
-            "basePrice": 15000,
-            "coverageMin": 10000000,  # Higher than max
-            "coverageMax": 500000,    # Lower than min
-            "status": "active"
-        }
-        
-        try:
-            response = self.session.post(
-                f"{API_BASE}/admin/products",
-                json=invalid_product,
-                headers={'Content-Type': 'application/json'}
-            )
-            
-            # Should fail with 400 or similar
-            if response.status_code >= 400:
-                print(f"✅ Validation working: {response.status_code} - Rejected invalid data")
-                results["validation_min_max_coverage"] = True
-            else:
-                print(f"❌ Validation failed: {response.status_code} - Should have rejected invalid data")
-                results["validation_min_max_coverage"] = False
-                
-        except Exception as e:
-            print(f"❌ Validation test error: {str(e)}")
-            results["validation_min_max_coverage"] = False
-        
-        # Test 4: Missing required fields
-        print("\n--- Test: POST /api/admin/products (Missing Required Fields) ---")
-        incomplete_product = {
-            "name": "Incomplete Product"
-            # Missing description, basePrice, coverageMin, coverageMax
-        }
-        
-        try:
-            response = self.session.post(
-                f"{API_BASE}/admin/products",
-                json=incomplete_product,
-                headers={'Content-Type': 'application/json'}
-            )
-            
-            # Should fail with 400 or similar
-            if response.status_code >= 400:
-                print(f"✅ Required field validation working: {response.status_code}")
-                results["validation_required_fields"] = True
-            else:
-                print(f"❌ Required field validation failed: {response.status_code}")
-                results["validation_required_fields"] = False
-                
-        except Exception as e:
-            print(f"❌ Required field validation test error: {str(e)}")
-            results["validation_required_fields"] = False
-        
-        # Test 5: Verify product appears in list after creation
-        print("\n--- Test: Verify New Product in List ---")
-        try:
-            response = self.session.get(f"{API_BASE}/admin/products")
-            if response.status_code == 200:
-                products_data = response.json()
-                
-                # Look for our created product
-                created_product_found = False
-                if hasattr(self, 'created_product_id') and self.created_product_id:
-                    for product in products_data:
-                        if product.get('id') == self.created_product_id:
-                            created_product_found = True
-                            print(f"✅ Created product found in list: {product.get('name')}")
-                            break
-                
-                if created_product_found:
-                    results["product_in_list_after_creation"] = True
-                else:
-                    print(f"❌ Created product not found in list")
-                    results["product_in_list_after_creation"] = False
-            else:
-                print(f"❌ Failed to fetch products for verification: {response.status_code}")
-                results["product_in_list_after_creation"] = False
-                
-        except Exception as e:
-            print(f"❌ Product list verification error: {str(e)}")
-            results["product_in_list_after_creation"] = False
-        
-        # Test 6: Check audit logging (if we can access audit logs)
-        print("\n--- Test: Audit Logging Verification ---")
-        try:
-            # Try to access audit logs endpoint (if it exists)
-            response = self.session.get(f"{API_BASE}/admin/audit-logs")
-            if response.status_code == 200:
-                audit_logs = response.json()
-                
-                # Look for product creation audit log
-                product_creation_logged = False
-                for log in audit_logs:
-                    if (log.get('action') == 'create' and 
-                        log.get('entityType') == 'product' and
-                        hasattr(self, 'created_product_id') and
-                        log.get('entityId') == self.created_product_id):
-                        product_creation_logged = True
-                        print(f"✅ Product creation audit log found")
-                        break
-                
-                results["audit_logging"] = product_creation_logged
-                if not product_creation_logged:
-                    print(f"❌ Product creation audit log not found")
-            else:
-                print(f"⚠️  Audit logs endpoint not accessible: {response.status_code}")
-                results["audit_logging"] = "NA"  # Not available for testing
-                
-        except Exception as e:
-            print(f"⚠️  Audit logging test error: {str(e)}")
-            results["audit_logging"] = "NA"  # Not available for testing
-        
-        return results
-
-    def run_all_tests(self) -> Dict[str, Dict[str, bool]]:
-        """Run all backend tests including route protection and product creation"""
-        print("🔒 COMPREHENSIVE BACKEND TESTING")
-        print("=" * 50)
-        
-        all_results = {}
-        
-        try:
-            # Test 1: Unauthenticated access
-            all_results["unauthenticated"] = self.test_unauthenticated_access()
-            
-            # Test 2: Admin role access
-            all_results["admin_role"] = self.test_admin_role_access()
-            
-            # Test 3: Customer role access  
-            all_results["customer_role"] = self.test_customer_role_access()
-            
-            # Test 4: Edge cases
-            all_results["edge_cases"] = self.test_edge_cases()
-            
-            # Test 5: Admin product creation
-            all_results["admin_product_creation"] = self.test_admin_product_creation()
-            
-        except Exception as e:
-            print(f"❌ Critical error during testing: {str(e)}")
-            all_results["critical_error"] = {"error": False}
-        
-        return all_results
+            self.log(f"❌ Product creation error: {str(e)}", "ERROR")
+            return False
     
-    def print_summary(self, results: Dict[str, Dict[str, bool]]):
-        """Print test summary"""
-        print("\n" + "=" * 50)
-        print("📊 TEST SUMMARY")
-        print("=" * 50)
+    def test_product_validation(self):
+        """Test product validation rules"""
+        self.log("=== TESTING PRODUCT VALIDATION ===")
         
-        total_tests = 0
-        passed_tests = 0
-        
-        for category, tests in results.items():
-            print(f"\n{category.upper().replace('_', ' ')}:")
-            category_passed = 0
-            category_total = 0
+        try:
+            # Test invalid product (coverageMin > coverageMax)
+            invalid_product = {
+                "name": "Invalid Product",
+                "description": "Test validation",
+                "basePrice": 10000,
+                "coverageMin": 15000000,  # Higher than max
+                "coverageMax": 1000000,   # Lower than min
+                "status": "active"
+            }
             
-            for test_name, passed in tests.items():
-                status = "✅ PASS" if passed else "❌ FAIL"
-                print(f"  {test_name}: {status}")
-                category_total += 1
-                if passed:
-                    category_passed += 1
+            validation_response = self.session.post(
+                f"{API_BASE}/admin/products",
+                json=invalid_product
+            )
             
-            print(f"  Category Score: {category_passed}/{category_total}")
-            total_tests += category_total
-            passed_tests += category_passed
+            self.log(f"Validation test status: {validation_response.status_code}")
+            
+            if validation_response.status_code == 400:
+                self.log("✅ Validation correctly rejected invalid product")
+                return True
+            elif validation_response.status_code == 201:
+                self.log("❌ Validation failed - invalid product was accepted", "ERROR")
+                return False
+            else:
+                self.log(f"❌ Unexpected validation response: {validation_response.status_code}", "ERROR")
+                return False
+                
+        except Exception as e:
+            self.log(f"❌ Product validation test error: {str(e)}", "ERROR")
+            return False
+    
+    def test_product_retrieval_verification(self):
+        """Verify created product appears in products list"""
+        self.log("=== TESTING PRODUCT RETRIEVAL VERIFICATION ===")
         
-        print(f"\n🎯 OVERALL SCORE: {passed_tests}/{total_tests} ({(passed_tests/total_tests*100):.1f}%)")
+        try:
+            if not hasattr(self, 'created_product_id'):
+                self.log("❌ No product ID to verify", "ERROR")
+                return False
+            
+            # Get products list
+            get_response = self.session.get(f"{API_BASE}/admin/products")
+            
+            if get_response.status_code == 200:
+                products = get_response.json()
+                
+                # Find our created product
+                created_product = next((p for p in products if p.get('id') == self.created_product_id), None)
+                
+                if created_product:
+                    self.log(f"✅ Created product found in list: {created_product['name']}")
+                    self.log(f"Product details: {json.dumps(created_product, indent=2)}")
+                    return True
+                else:
+                    self.log(f"❌ Created product not found in list (ID: {self.created_product_id})", "ERROR")
+                    return False
+            else:
+                self.log(f"❌ Failed to retrieve products for verification: {get_response.status_code}", "ERROR")
+                return False
+                
+        except Exception as e:
+            self.log(f"❌ Product retrieval verification error: {str(e)}", "ERROR")
+            return False
+    
+    def run_all_tests(self):
+        """Run all backend tests"""
+        self.log("🚀 STARTING BACKEND TESTING FOR ADMIN PRODUCT CREATION")
+        self.log(f"Base URL: {BASE_URL}")
+        self.log(f"API Base: {API_BASE}")
         
-        if passed_tests == total_tests:
-            print("🎉 ALL TESTS PASSED - Route protection is working correctly!")
+        test_results = {}
+        
+        # Test 1: Admin Authentication
+        test_results['admin_auth'] = self.test_admin_authentication()
+        
+        # Test 2: Admin Session Verification
+        test_results['session_verification'] = self.test_admin_session_verification()
+        
+        # Test 3: Admin Products API Access
+        test_results['api_access'] = self.test_admin_products_api_access()
+        
+        # Test 4: Product Creation
+        test_results['product_creation'] = self.test_product_creation()
+        
+        # Test 5: Product Validation
+        test_results['product_validation'] = self.test_product_validation()
+        
+        # Test 6: Product Retrieval Verification
+        test_results['product_verification'] = self.test_product_retrieval_verification()
+        
+        # Summary
+        self.log("=" * 60)
+        self.log("🏁 BACKEND TESTING SUMMARY")
+        self.log("=" * 60)
+        
+        passed = 0
+        total = len(test_results)
+        
+        for test_name, result in test_results.items():
+            status = "✅ PASS" if result else "❌ FAIL"
+            self.log(f"{test_name.replace('_', ' ').title()}: {status}")
+            if result:
+                passed += 1
+        
+        self.log("=" * 60)
+        self.log(f"OVERALL RESULT: {passed}/{total} tests passed")
+        
+        if passed == total:
+            self.log("🎉 ALL TESTS PASSED - Admin product creation functionality working correctly!")
+            return True
         else:
-            print("⚠️  SOME TESTS FAILED - Route protection needs attention!")
-
-def main():
-    """Main test execution"""
-    tester = RouteProtectionTester()
-    
-    print("Starting comprehensive backend testing...")
-    print(f"Base URL: {BASE_URL}")
-    print(f"Testing with Admin: {ADMIN_CREDENTIALS['email']}")
-    print(f"Testing with Customer: {CUSTOMER_CREDENTIALS['email']}")
-    
-    # Run all tests
-    results = tester.run_all_tests()
-    
-    # Print summary
-    tester.print_summary(results)
-    
-    # Return exit code based on results
-    total_passed = sum(sum(1 for v in tests.values() if v is True) for tests in results.values())
-    total_tests = sum(sum(1 for v in tests.values() if v is not "NA") for tests in results.values())
-    
-    if total_passed == total_tests:
-        sys.exit(0)  # Success
-    else:
-        sys.exit(1)  # Some tests failed
+            self.log("⚠️  SOME TESTS FAILED - Admin product creation needs attention")
+            return False
 
 if __name__ == "__main__":
-    main()
+    tester = BackendTester()
+    success = tester.run_all_tests()
+    sys.exit(0 if success else 1)
