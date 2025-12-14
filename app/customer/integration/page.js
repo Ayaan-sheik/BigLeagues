@@ -185,35 +185,124 @@ export default function IntegrationPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Documentation</CardTitle>
+          <CardTitle>API Documentation</CardTitle>
           <CardDescription>Learn how to integrate with InsureInfra API</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-6">
+            {/* Get Premium Information */}
             <div className="p-4 border rounded-lg">
-              <h4 className="font-semibold mb-2">Quick Start</h4>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
-{`// Record a transaction with premium
-fetch('https://api.insureinfra.com/v1/transactions', {
-  method: 'POST',
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-lg">Get Premium Information</h4>
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  GET
+                </Badge>
+              </div>
+              
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-sm font-medium">Endpoint</Label>
+                  <code className="block mt-1 p-2 bg-gray-100 rounded text-sm">
+                    GET {typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/premium
+                  </code>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Authentication</Label>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Include your API key in the Authorization header
+                  </p>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Example Request</Label>
+                  <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm mt-2">
+{`// JavaScript/Node.js
+const response = await fetch('${typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/premium', {
+  method: 'GET',
   headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    productSold: 'Product Name',
-    saleAmount: 10000,
-    premiumAmount: 15,
-    transactionId: 'your-unique-id'
-  })
-})`}
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+});
+
+const data = await response.json();
+console.log(data);`}
+                  </pre>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Example Response</Label>
+                  <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm mt-2">
+{`{
+  "success": true,
+  "data": {
+    "companyName": "Your Company Name",
+    "policies": [
+      {
+        "applicationNumber": "APP-2024-001",
+        "productName": "Product Liability Insurance",
+        "productId": "uuid",
+        "companyName": "Your Company",
+        "coverageAmount": 10000000,
+        "premium": {
+          "recommended": 750,
+          "actual": 800,
+          "currency": "INR"
+        },
+        "status": "active",
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "updatedAt": "2024-01-01T00:00:00.000Z"
+      }
+    ],
+    "summary": {
+      "totalPolicies": 1,
+      "totalPremium": 800,
+      "currency": "INR"
+    }
+  }
+}`}
+                  </pre>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <h5 className="text-sm font-semibold text-blue-900 mb-1">Notes:</h5>
+                  <ul className="text-xs text-blue-800 space-y-1">
+                    <li>• Only returns approved policies</li>
+                    <li>• Premium amounts are in INR</li>
+                    <li>• API key must be kept secure</li>
+                    <li>• Rate limit: 100 requests per minute</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* cURL Example */}
+            <div className="p-4 border rounded-lg bg-gray-50">
+              <h4 className="font-semibold mb-2">cURL Example</h4>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+{`curl -X GET '${typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/premium' \\
+  -H 'Authorization: Bearer YOUR_API_KEY'`}
               </pre>
             </div>
-            <Button variant="outline" asChild>
-              <a href="#" target="_blank">
-                View Full Documentation
-              </a>
-            </Button>
+
+            {/* Python Example */}
+            <div className="p-4 border rounded-lg">
+              <h4 className="font-semibold mb-2">Python Example</h4>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+{`import requests
+
+url = '${typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/premium'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY'
+}
+
+response = requests.get(url, headers=headers)
+data = response.json()
+
+print(f"Total Premium: ₹{data['data']['summary']['totalPremium']}")
+print(f"Total Policies: {data['data']['summary']['totalPolicies']}")`}
+              </pre>
+            </div>
           </div>
         </CardContent>
       </Card>
