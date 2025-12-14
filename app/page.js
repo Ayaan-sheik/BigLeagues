@@ -326,9 +326,6 @@ export default function LandingPage() {
 
               {/* Visual: Split Settlement */}
               <div className="flex-1 w-full p-8 bg-gray-50 border border-gray-200 rounded-xl relative overflow-hidden">
-                <div className="absolute top-4 right-4 opacity-10">
-                  <Layers size={80} />
-                </div>
                 <div className="space-y-3 font-mono text-sm">
                   <div className="p-3 bg-white border rounded shadow-sm flex justify-between">
                     <span>Customer Pays</span>
