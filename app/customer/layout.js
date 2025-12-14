@@ -13,7 +13,6 @@ import {
   Plug,
   Settings,
   LifeBuoy,
-  Receipt,
   Menu,
   ChevronRight,
 } from 'lucide-react'
