@@ -221,7 +221,7 @@ export default function LandingPage() {
               </div>
               <button
                 type="button"
-                onClick={() => scrollToId('request-access')}
+                onClick={() => router.push('/auth/register')}
                 className="text-sm font-medium bg-gray-900 text-white px-4 py-1.5 rounded-full hover:bg-gray-800"
               >
                 Request Access
