@@ -71,7 +71,42 @@ ADMIN LOGIN
                                         - Rejected
 ```
 
-### 🟢 Customer Flow (Application Submission)
+#### Part B: Application Review & Approval
+
+```
+ADMIN LOGIN
+    │
+    └─→ /admin/underwriting
+            │
+            ├─→ View Applications in Kanban Board
+            │       │
+            │       └─→ API: GET /api/admin/applications
+            │               │
+            │               └─→ MongoDB.applications.find()
+            │                       │
+            │                       └─→ Display by status:
+            │                           - New Applications
+            │                           - Under Review
+            │                           - Info Required
+            │                           - Approved
+            │                           - Rejected
+            │
+            └─→ Drag Application to "Approved" or "Rejected"
+                    │
+                    └─→ API: PATCH /api/admin/applications/:id
+                            │
+                            ├─→ MongoDB.applications.updateOne()
+                            │   - status: 'approved' or 'rejected'
+                            │   - underwriterNotes: "Reason..."
+                            │   - updatedAt: Date
+                            │
+                            └─→ ✅ Status Updated!
+                                    │
+                                    └─→ Customer sees updated status
+                                        in /customer/policies
+```
+
+### 🟢 Customer Flow (Application Submission & Status Check)
 
 ```
 CUSTOMER LOGIN
