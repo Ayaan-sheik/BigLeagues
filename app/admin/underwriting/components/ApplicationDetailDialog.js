@@ -209,7 +209,7 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{application.companyName}</DialogTitle>
-          <DialogDescription>Application #{application.applicationNumber}</DialogDescription>
+          <DialogDescription>Service ID: {application.applicationNumber}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
