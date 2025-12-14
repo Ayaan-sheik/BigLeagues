@@ -12,7 +12,6 @@ import {
   FileText,
   CreditCard,
   BarChart3,
-  Plug,
   Shield,
   Settings,
   Menu,
