@@ -30,7 +30,9 @@
 
 ## Flow Breakdown
 
-### 🔵 Admin Flow (Product Management)
+### 🔵 Admin Flow (Product Management & Underwriting)
+
+#### Part A: Product Creation
 
 ```
 ADMIN LOGIN
