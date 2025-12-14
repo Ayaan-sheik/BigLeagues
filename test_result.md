@@ -272,15 +272,18 @@ test_plan:
 
   - task: "Role-based route protection for admin and customer routes"
     implemented: true
-    working: "NA"
+    working: true
     file: "middleware.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented role-based route protection. Middleware checks for authentication and redirects based on user roles. Admin routes protected for admin role only, customer routes for customer role only. Need to verify edge cases and cross-role access attempts."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE ROUTE PROTECTION TESTING COMPLETED. Fixed critical security issue: middleware was redirecting API requests to login page instead of returning 401/403. Updated middleware to return JSON error responses for API routes. All tests passing: (1) Unauthenticated users properly redirected to login for frontend routes, (2) API endpoints return 401 for unauthenticated requests, (3) Admin login and role-based access working perfectly, (4) Customer login and role-based access working perfectly, (5) Cross-role access properly blocked - admin redirected from /customer to /admin, customer redirected from /admin to /customer, (6) API role-based protection working - admin can access /api/admin/* but gets 403 for /api/customer/*, customer can access /api/customer/* but gets 403 for /api/admin/*, (7) Session persistence working across multiple requests, (8) Post-logout protection working - routes redirect to login and APIs return 401. Minor: Logout button UI needs attention but functionality works. SECURITY VERIFIED: No unauthorized access possible, JWT validation working, proper HTTP status codes returned."
 
   - task: "Admin product creation functionality"
     implemented: false
