@@ -206,7 +206,7 @@ console.log(data);`}
     "companyName": "Your Company Name",
     "policies": [
       {
-        "applicationNumber": "APP-2024-001",
+        "serviceId": "APP-2024-001",
         "productName": "Product Liability Insurance",
         "productId": "uuid",
         "companyName": "Your Company",
@@ -228,6 +228,20 @@ console.log(data);`}
     }
   }
 }`}
+                  </pre>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Filtering Examples</Label>
+                  <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm mt-2">
+{`// Filter by Service ID
+GET /api/v1/premium?serviceId=APP-2024-001
+
+// Filter by Premium Amount
+GET /api/v1/premium?premium=800
+
+// Combine filters
+GET /api/v1/premium?serviceId=APP-2024-001&premium=800`}
                   </pre>
                 </div>
 
