@@ -252,9 +252,202 @@ class RouteProtectionTester:
         
         return results
     
+    def test_admin_product_creation(self) -> Dict[str, bool]:
+        """Test 5: Admin Product Creation Functionality"""
+        print("\n=== TEST 5: ADMIN PRODUCT CREATION ===")
+        results = {}
+        
+        # Login as admin first
+        login_success, login_msg = self.login(ADMIN_CREDENTIALS)
+        print(f"Admin login for product testing: {login_msg}")
+        
+        if not login_success:
+            print("❌ Cannot proceed with product creation tests - admin login failed")
+            return {"admin_login_for_products": False}
+        
+        # Test 1: Get existing products (should work)
+        print("\n--- Test: GET /api/admin/products ---")
+        try:
+            response = self.session.get(f"{API_BASE}/admin/products")
+            success = response.status_code == 200
+            if success:
+                products_data = response.json()
+                print(f"✅ GET products successful: {len(products_data)} products found")
+                results["get_products"] = True
+            else:
+                print(f"❌ GET products failed: {response.status_code} - {response.text}")
+                results["get_products"] = False
+        except Exception as e:
+            print(f"❌ GET products error: {str(e)}")
+            results["get_products"] = False
+        
+        # Test 2: Create new product with valid data
+        print("\n--- Test: POST /api/admin/products (Valid Data) ---")
+        test_product = {
+            "name": "Directors & Officers Insurance",
+            "description": "Coverage for directors and officers against legal action and financial losses",
+            "basePrice": 25000,
+            "coverageMin": 500000,
+            "coverageMax": 10000000,
+            "status": "active"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{API_BASE}/admin/products",
+                json=test_product,
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            if response.status_code == 201:
+                created_product = response.json()
+                print(f"✅ Product creation successful")
+                print(f"   Product ID: {created_product.get('id', 'N/A')}")
+                print(f"   Product Name: {created_product.get('name', 'N/A')}")
+                
+                # Verify UUID is generated
+                product_id = created_product.get('id')
+                if product_id and len(product_id) == 36:  # UUID length
+                    print(f"✅ UUID generated correctly: {product_id}")
+                    results["product_uuid_generation"] = True
+                else:
+                    print(f"❌ UUID not generated properly: {product_id}")
+                    results["product_uuid_generation"] = False
+                
+                # Store product ID for later tests
+                self.created_product_id = product_id
+                results["create_product_valid"] = True
+                
+            else:
+                print(f"❌ Product creation failed: {response.status_code} - {response.text}")
+                results["create_product_valid"] = False
+                results["product_uuid_generation"] = False
+                
+        except Exception as e:
+            print(f"❌ Product creation error: {str(e)}")
+            results["create_product_valid"] = False
+            results["product_uuid_generation"] = False
+        
+        # Test 3: Validation test - min coverage > max coverage
+        print("\n--- Test: POST /api/admin/products (Invalid: Min > Max Coverage) ---")
+        invalid_product = {
+            "name": "Test Invalid Product",
+            "description": "This should fail validation",
+            "basePrice": 15000,
+            "coverageMin": 10000000,  # Higher than max
+            "coverageMax": 500000,    # Lower than min
+            "status": "active"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{API_BASE}/admin/products",
+                json=invalid_product,
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            # Should fail with 400 or similar
+            if response.status_code >= 400:
+                print(f"✅ Validation working: {response.status_code} - Rejected invalid data")
+                results["validation_min_max_coverage"] = True
+            else:
+                print(f"❌ Validation failed: {response.status_code} - Should have rejected invalid data")
+                results["validation_min_max_coverage"] = False
+                
+        except Exception as e:
+            print(f"❌ Validation test error: {str(e)}")
+            results["validation_min_max_coverage"] = False
+        
+        # Test 4: Missing required fields
+        print("\n--- Test: POST /api/admin/products (Missing Required Fields) ---")
+        incomplete_product = {
+            "name": "Incomplete Product"
+            # Missing description, basePrice, coverageMin, coverageMax
+        }
+        
+        try:
+            response = self.session.post(
+                f"{API_BASE}/admin/products",
+                json=incomplete_product,
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            # Should fail with 400 or similar
+            if response.status_code >= 400:
+                print(f"✅ Required field validation working: {response.status_code}")
+                results["validation_required_fields"] = True
+            else:
+                print(f"❌ Required field validation failed: {response.status_code}")
+                results["validation_required_fields"] = False
+                
+        except Exception as e:
+            print(f"❌ Required field validation test error: {str(e)}")
+            results["validation_required_fields"] = False
+        
+        # Test 5: Verify product appears in list after creation
+        print("\n--- Test: Verify New Product in List ---")
+        try:
+            response = self.session.get(f"{API_BASE}/admin/products")
+            if response.status_code == 200:
+                products_data = response.json()
+                
+                # Look for our created product
+                created_product_found = False
+                if hasattr(self, 'created_product_id') and self.created_product_id:
+                    for product in products_data:
+                        if product.get('id') == self.created_product_id:
+                            created_product_found = True
+                            print(f"✅ Created product found in list: {product.get('name')}")
+                            break
+                
+                if created_product_found:
+                    results["product_in_list_after_creation"] = True
+                else:
+                    print(f"❌ Created product not found in list")
+                    results["product_in_list_after_creation"] = False
+            else:
+                print(f"❌ Failed to fetch products for verification: {response.status_code}")
+                results["product_in_list_after_creation"] = False
+                
+        except Exception as e:
+            print(f"❌ Product list verification error: {str(e)}")
+            results["product_in_list_after_creation"] = False
+        
+        # Test 6: Check audit logging (if we can access audit logs)
+        print("\n--- Test: Audit Logging Verification ---")
+        try:
+            # Try to access audit logs endpoint (if it exists)
+            response = self.session.get(f"{API_BASE}/admin/audit-logs")
+            if response.status_code == 200:
+                audit_logs = response.json()
+                
+                # Look for product creation audit log
+                product_creation_logged = False
+                for log in audit_logs:
+                    if (log.get('action') == 'create' and 
+                        log.get('entityType') == 'product' and
+                        hasattr(self, 'created_product_id') and
+                        log.get('entityId') == self.created_product_id):
+                        product_creation_logged = True
+                        print(f"✅ Product creation audit log found")
+                        break
+                
+                results["audit_logging"] = product_creation_logged
+                if not product_creation_logged:
+                    print(f"❌ Product creation audit log not found")
+            else:
+                print(f"⚠️  Audit logs endpoint not accessible: {response.status_code}")
+                results["audit_logging"] = "NA"  # Not available for testing
+                
+        except Exception as e:
+            print(f"⚠️  Audit logging test error: {str(e)}")
+            results["audit_logging"] = "NA"  # Not available for testing
+        
+        return results
+
     def run_all_tests(self) -> Dict[str, Dict[str, bool]]:
-        """Run all route protection tests"""
-        print("🔒 COMPREHENSIVE ROUTE PROTECTION TESTING")
+        """Run all backend tests including route protection and product creation"""
+        print("🔒 COMPREHENSIVE BACKEND TESTING")
         print("=" * 50)
         
         all_results = {}
@@ -271,6 +464,9 @@ class RouteProtectionTester:
             
             # Test 4: Edge cases
             all_results["edge_cases"] = self.test_edge_cases()
+            
+            # Test 5: Admin product creation
+            all_results["admin_product_creation"] = self.test_admin_product_creation()
             
         except Exception as e:
             print(f"❌ Critical error during testing: {str(e)}")
