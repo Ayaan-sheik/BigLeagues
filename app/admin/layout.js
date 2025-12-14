@@ -46,7 +46,7 @@ function SidebarContent({ closeMobile }) {
           <Shield className="h-6 w-6 text-orange-500" />
           <div className="flex items-center gap-2">
             <img 
-              src="https://customer-assets.emergentagent.com/job_omniguard/artifacts/gn6fyivl_image.png" 
+              src="https://customer-assets.emergentagent.com/job_omniguard/artifacts/uq2d89zx_Gemini_Generated_Image_jznqkljznqkljznq-removebg-preview.png" 
               alt="Vantage Logo" 
               className="h-6 w-6"
             />
