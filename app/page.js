@@ -238,8 +238,8 @@ export default function LandingPage() {
             <div className="flex flex-col items-center text-center">
               <Badge>Startup Stability & Product Protection Layer</Badge>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900 mb-6 max-w-3xl font-serif">
-                Embed stability into <br className="hidden md:block" />
-                <span className="text-gray-500">every transaction.</span>
+                Embed Stability Into <br className="hidden md:block" />
+                <span className="text-gray-500">Every Transaction.</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl leading-relaxed">
                 Protect your startup from product failures, founder risk, and warranty losses with premiums recovered
