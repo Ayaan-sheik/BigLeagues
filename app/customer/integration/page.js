@@ -250,6 +250,8 @@ GET /api/v1/premium?serviceId=APP-2024-001&premium=800`}
                   <ul className="text-xs text-blue-800 space-y-1">
                     <li>• Only returns approved policies</li>
                     <li>• Premium amounts are in INR</li>
+                    <li>• "serviceId" is your unique policy identifier</li>
+                    <li>• Use query parameters to filter results</li>
                     <li>• API key must be kept secure</li>
                     <li>• Rate limit: 100 requests per minute</li>
                   </ul>
