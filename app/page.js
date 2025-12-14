@@ -233,7 +233,7 @@ export default function LandingPage() {
           <Section className="pt-20 pb-24 border-b" id="top">
             <div className="flex flex-col items-center text-center">
               <Badge>Startup Stability & Product Protection Layer</Badge>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900 mb-6 max-w-3xl">
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900 mb-6 max-w-3xl font-serif">
                 Embed stability into <br className="hidden md:block" />
                 <span className="text-gray-500">every transaction.</span>
               </h1>
