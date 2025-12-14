@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { SessionProvider } from '@/components/providers/SessionProvider'
 
 export const metadata = {
-  title: 'Vandage — Embedded Insurance Orchestration',
+  title: 'Vantage — Embedded Insurance Orchestration',
   description:
     'Protect your startup from product failures, founder risk, and warranty losses — with per-transaction premium recovery.',
 }

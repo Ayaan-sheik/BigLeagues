@@ -109,7 +109,7 @@ export default function IntegrationPage() {
             API Key
           </CardTitle>
           <CardDescription>
-            Use this key to integrate Vandage with your application
+            Use this key to integrate Vantage with your application
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -150,7 +150,7 @@ export default function IntegrationPage() {
       <Card>
         <CardHeader>
           <CardTitle>API Documentation</CardTitle>
-          <CardDescription>Learn how to integrate with Vandage API</CardDescription>
+          <CardDescription>Learn how to integrate with Vantage API</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">

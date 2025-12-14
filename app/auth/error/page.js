@@ -34,7 +34,7 @@ export default function AuthErrorPage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-6">
               <h1 className="text-3xl font-bold text-gray-900">
-                Vandage
+                Vantage
               </h1>
             </Link>
             

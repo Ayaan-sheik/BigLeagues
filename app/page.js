@@ -202,7 +202,7 @@ export default function LandingPage() {
                 onClick={() => scrollToId('top')}
                 className="font-semibold text-gray-900"
               >
-                Vandage
+                Vantage
               </button>
               <div className="hidden sm:flex gap-6 text-sm font-medium text-gray-600">
                 <button type="button" onClick={() => scrollToId('problem')} className="hover:text-black">

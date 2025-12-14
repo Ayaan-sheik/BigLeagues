@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
               <h1 className="text-3xl font-bold text-gray-900">
-                Vandage
+                Vantage
               </h1>
             </Link>
             <p className="text-gray-500 mt-2 text-sm">Set your new password</p>
