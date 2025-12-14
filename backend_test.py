@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-Comprehensive Route Protection Testing for InsureInfra Application
-Tests authentication, authorization, and role-based access control
+Comprehensive Backend Testing for InsureInfra Application
+Tests authentication, authorization, role-based access control, and admin product creation
 """
 
 import requests
 import json
 import time
 import sys
+import uuid
 from typing import Dict, Optional, Tuple
 
 # Test configuration
