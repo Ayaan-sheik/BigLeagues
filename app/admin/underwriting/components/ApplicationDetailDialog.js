@@ -36,7 +36,6 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
   const [actualPremium, setActualPremium] = useState(application.actualPremium?.toString() || '')
   const [recommendedPremium, setRecommendedPremium] = useState(application.recommendedPremium || null)
   const [products, setProducts] = useState([])
-  const [calculating, setCalculating] = useState(false)
 
   useEffect(() => {
     if (open) {
