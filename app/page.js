@@ -209,17 +209,17 @@ export default function LandingPage() {
                 Vantage
               </button>
               <div className="hidden sm:flex gap-6 text-sm font-medium text-gray-600">
-                <button type="button" onClick={() => scrollToId('problem')} className="hover:text-black">
+                <button type="button" onClick={() => scrollToId('problem', 80)} className="hover:text-black">
                   Risks
                 </button>
                 <button
                   type="button"
-                  onClick={() => scrollToId('how-it-works')}
+                  onClick={() => scrollToId('how-it-works', 80)}
                   className="hover:text-black"
                 >
                   Mechanism
                 </button>
-                <button type="button" onClick={() => scrollToId('coverage')} className="hover:text-black">
+                <button type="button" onClick={() => scrollToId('coverage', 80)} className="hover:text-black">
                   Coverage
                 </button>
               </div>
