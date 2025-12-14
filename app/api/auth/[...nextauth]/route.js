@@ -103,7 +103,7 @@ export const authOptions = {
       return session
     },
     
-    async redirect({ url, baseUrl }) {
+    async redirect({ url, baseUrl, token }) {
       // Handle callback URL if provided
       if (url.startsWith(baseUrl)) {
         return url
@@ -112,6 +112,13 @@ export const authOptions = {
       // For relative URLs, prepend baseUrl
       if (url.startsWith('/')) {
         return `${baseUrl}${url}`
+      }
+      
+      // Role-based redirect after login
+      if (token?.role === 'admin') {
+        return `${baseUrl}/admin`
+      } else if (token?.role === 'customer') {
+        return `${baseUrl}/customer`
       }
       
       // Otherwise return the baseUrl (home page)
