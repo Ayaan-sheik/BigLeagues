@@ -142,19 +142,14 @@ export default function ProductsPage() {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <div>
-                        <EditProductDialog
-                          product={product}
-                          onSuccess={fetchProducts}
-                          trigger={
-                            <div className="flex items-center w-full cursor-pointer">
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </div>
-                          }
-                        />
-                      </div>
+                    <DropdownMenuItem 
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setEditingProduct(product)
+                      }}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => deleteProduct(product.id)} className="text-red-600">
