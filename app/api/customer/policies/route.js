@@ -13,10 +13,39 @@ export async function GET(request) {
     }
 
     const db = await getDb()
-    const policies = await db.collection('policies')
+    
+    // Get all applications (which include status: new, under_review, approved, rejected, etc.)
+    const applications = await db.collection('applications')
       .find({ userId: session.user.id })
       .sort({ createdAt: -1 })
       .toArray()
+    
+    // Transform applications to policy format for display
+    const policies = applications.map(app => ({
+      id: app.id,
+      policyNumber: app.applicationNumber, // Use application number as policy number
+      userId: app.userId,
+      productName: app.productName,
+      productId: app.productId,
+      companyName: app.companyName,
+      coverageAmount: app.coverageAmount || app.requestedCoverage,
+      premium: app.actualPremium || app.recommendedPremium,
+      // Map application status to display status
+      status: app.status === 'approved' ? 'active' : 
+              app.status === 'rejected' ? 'rejected' : 
+              app.status === 'under_review' ? 'pending' : 
+              app.status === 'additional_info_required' ? 'info_required' : 
+              'pending',
+      applicationStatus: app.status, // Keep original status
+      applicationNumber: app.applicationNumber,
+      createdAt: app.createdAt,
+      updatedAt: app.updatedAt,
+      // Additional info
+      industry: app.industry,
+      founderName: app.founderName,
+      riskScore: app.riskScore,
+      underwriterNotes: app.underwriterNotes,
+    }))
 
     return NextResponse.json({ policies })
   } catch (error) {
