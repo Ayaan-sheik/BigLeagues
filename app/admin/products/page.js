@@ -210,6 +210,19 @@ export default function ProductsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Edit Product Dialog */}
+      {editingProduct && (
+        <EditProductDialog
+          product={editingProduct}
+          onSuccess={() => {
+            fetchProducts()
+            setEditingProduct(null)
+          }}
+          open={!!editingProduct}
+          onOpenChange={(open) => !open && setEditingProduct(null)}
+        />
+      )}
     </div>
   )
 }
