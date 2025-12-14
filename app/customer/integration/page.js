@@ -169,6 +169,9 @@ export default function IntegrationPage() {
                   <code className="block mt-1 p-2 bg-gray-100 rounded text-sm">
                     GET {typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/premium
                   </code>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Optional: Add ?serviceId=XXX or ?premium=XXX to filter
+                  </p>
                 </div>
 
                 <div>
