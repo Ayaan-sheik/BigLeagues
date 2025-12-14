@@ -242,7 +242,7 @@ export default function LandingPage() {
                 <span className="text-gray-500">every transaction.</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl leading-relaxed">
-                Protect your startup from product failures, founder risk, and warranty losses — with premiums recovered
+                Protect your startup from product failures, founder risk, and warranty losses with premiums recovered
                 automatically at checkout.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
