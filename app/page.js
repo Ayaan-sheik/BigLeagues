@@ -261,7 +261,7 @@ export default function LandingPage() {
               <div className="mt-12 w-full max-w-4xl">
                 <div className="w-full rounded-xl border border-gray-200 shadow-lg overflow-hidden">
                   <img 
-                    src="https://customer-assets.emergentagent.com/job_omniguard/artifacts/8n8oi8jb_image.png" 
+                    src="https://customer-assets.emergentagent.com/job_omniguard/artifacts/yuos8fg7_image.png" 
                     alt="Vantage Dashboard Overview - Insurance Operations Management"
                     className="w-full h-auto"
                   />
