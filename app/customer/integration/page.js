@@ -109,7 +109,7 @@ export default function IntegrationPage() {
             API Key
           </CardTitle>
           <CardDescription>
-            Use this key to integrate InsureInfra with your application
+            Use this key to integrate Vandage with your application
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
