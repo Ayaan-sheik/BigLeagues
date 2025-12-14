@@ -148,9 +148,26 @@ CUSTOMER LOGIN
     │
     └─→ View Application Status
             │
-            └─→ API: GET /api/customer/applications
+            └─→ /customer/policies
                     │
-                    └─→ MongoDB.applications.find({ userId: <id> })
+                    └─→ API: GET /api/customer/policies
+                            │
+                            └─→ MongoDB.applications.find({ userId: <id> })
+                                    │
+                                    └─→ Display with Status Badges:
+                                        • approved → 🟢 "Approved" (Green)
+                                        • rejected → 🔴 "Rejected" (Red)
+                                        • under_review/new → 🟡 "Under Review" (Yellow)
+                                        • additional_info_required → 🔵 "Info Required" (Blue)
+                                        
+                                        Shows for each application:
+                                        - Application Number (e.g., APP-2024-001)
+                                        - Product Name
+                                        - Coverage Amount
+                                        - Premium
+                                        - Status Badge
+                                        - Underwriter Notes (if rejected/info required)
+                                        - Applied Date
 ```
 
 ## 📋 API Endpoints Reference
