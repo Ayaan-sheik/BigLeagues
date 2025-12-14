@@ -24,10 +24,14 @@ import {
 } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
 
-export default function EditProductDialog({ product, onSuccess, trigger }) {
+export default function EditProductDialog({ product, onSuccess, trigger, open: controlledOpen, onOpenChange }) {
   const { toast } = useToast()
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  
+  // Use controlled open state if provided, otherwise use internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = onOpenChange || setInternalOpen
   const [formData, setFormData] = useState({
     name: '',
     description: '',
