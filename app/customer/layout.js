@@ -25,7 +25,7 @@ const navigation = [
   { name: 'Dashboard Home', href: '/customer', icon: LayoutDashboard },
   { name: 'My Policies', href: '/customer/policies', icon: Shield },
   { name: 'Claims', href: '/customer/claims', icon: FileText },
-  { name: 'Payments & Billing', href: '/customer/payments', icon: CreditCard },
+  { name: 'Transactions', href: '/customer/payments', icon: CreditCard },
   { name: 'Integration & API', href: '/customer/integration', icon: Plug },
   { name: 'Analytics', href: '/customer/analytics', icon: BarChart3 },
   { name: 'Profile & Settings', href: '/customer/settings', icon: Settings },
