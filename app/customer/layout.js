@@ -25,7 +25,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 const navigation = [
   { name: 'Dashboard Home', href: '/customer', icon: LayoutDashboard },
   { name: 'My Policies', href: '/customer/policies', icon: Shield },
-  { name: 'Transactions', href: '/customer/transactions', icon: Receipt },
   { name: 'Claims', href: '/customer/claims', icon: FileText },
   { name: 'Payments & Billing', href: '/customer/payments', icon: CreditCard },
   { name: 'Integration & API', href: '/customer/integration', icon: Plug },
