@@ -510,7 +510,7 @@ def main():
     """Main test execution"""
     tester = RouteProtectionTester()
     
-    print("Starting comprehensive route protection testing...")
+    print("Starting comprehensive backend testing...")
     print(f"Base URL: {BASE_URL}")
     print(f"Testing with Admin: {ADMIN_CREDENTIALS['email']}")
     print(f"Testing with Customer: {CUSTOMER_CREDENTIALS['email']}")
@@ -522,8 +522,8 @@ def main():
     tester.print_summary(results)
     
     # Return exit code based on results
-    total_passed = sum(sum(tests.values()) for tests in results.values())
-    total_tests = sum(len(tests) for tests in results.values())
+    total_passed = sum(sum(1 for v in tests.values() if v is True) for tests in results.values())
+    total_tests = sum(sum(1 for v in tests.values() if v is not "NA") for tests in results.values())
     
     if total_passed == total_tests:
         sys.exit(0)  # Success
