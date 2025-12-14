@@ -32,7 +32,6 @@ const navigation = [
   { name: 'Claims Management', href: '/admin/claims', icon: FileText },
   { name: 'Payments', href: '/admin/payments', icon: CreditCard },
   { name: 'Analytics & Reports', href: '/admin/analytics', icon: BarChart3 },
-  { name: 'Integrations', href: '/admin/integrations', icon: Plug },
   { name: 'Compliance & Audit', href: '/admin/compliance', icon: Shield },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
