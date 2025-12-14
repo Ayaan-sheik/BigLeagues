@@ -90,7 +90,7 @@ export default function EditProductDialog({ product, onSuccess, trigger, open: c
         description: 'Product updated successfully',
       })
 
-      setOpen(false)
+      if (setOpen) setOpen(false)
       if (onSuccess) onSuccess()
     } catch (err) {
       console.error(err)
