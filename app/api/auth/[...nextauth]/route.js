@@ -104,20 +104,18 @@ export const authOptions = {
     },
     
     async redirect({ url, baseUrl }) {
-      // If trying to access auth pages or home after login, redirect based on role
-      if (url.includes('/auth/login') || url === baseUrl || url.includes('/dashboard')) {
-        // Get the token to check the role (we'll need to do this differently)
-        // For now, let callbackUrl handle it or default to home
-        if (url.includes('callbackUrl=')) {
-          const callbackUrl = new URL(url).searchParams.get('callbackUrl')
-          if (callbackUrl) {
-            return `${baseUrl}${callbackUrl}`
-          }
-        }
-        // Default: let login page handle the redirect based on session
-        return baseUrl
+      // Handle callback URL if provided
+      if (url.startsWith(baseUrl)) {
+        return url
       }
-      return url
+      
+      // For relative URLs, prepend baseUrl
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`
+      }
+      
+      // Otherwise return the baseUrl (home page)
+      return baseUrl
     },
   },
   
