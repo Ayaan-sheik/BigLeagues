@@ -1,4 +1,4 @@
-# 🔄 InsureInfra Data Flow Diagram
+# 🔄 Vandage Data Flow Diagram
 
 ## Complete System Flow
 
@@ -311,4 +311,4 @@ This script verifies:
 ---
 
 **Last Updated**: December 14, 2024
-**System**: InsureInfra v1.0
+**System**: Vandage v1.0

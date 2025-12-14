@@ -316,6 +316,6 @@ Response: Array of user's applications with status
 ---
 
 **Last Updated**: December 14, 2024  
-**System**: InsureInfra v1.0  
+**System**: Vandage v1.0  
 **Database**: MongoDB (insureinfra)  
 **Collection**: applications (shared by admin and customer)
