@@ -67,7 +67,7 @@ function MockupSVG({ title = 'Product mockup', subtitle = 'Risk engine • premi
         <span className="w-2.5 h-2.5 rounded-full bg-red-200" />
         <span className="w-2.5 h-2.5 rounded-full bg-yellow-200" />
         <span className="w-2.5 h-2.5 rounded-full bg-green-200" />
-        <div className="ml-3 text-xs text-gray-500 font-mono truncate">insureinfra.app / dashboard</div>
+        <div className="ml-3 text-xs text-gray-500 font-mono truncate">vandage.app / dashboard</div>
       </div>
 
       <div className="p-5">
