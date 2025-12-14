@@ -336,31 +336,20 @@ export default function ApplicationDetailDialog({ application, onSuccess }) {
 
             {selectedProductId && (
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-blue-900">Selected Product</p>
-                    <p className="text-xs text-blue-700 mt-1">{selectedProduct?.name}</p>
-                    <p className="text-xs text-blue-600 mt-1">Base Premium: ₹{selectedProduct?.basePrice}</p>
-                  </div>
-                  <Button
-                    onClick={handleCalculatePremium}
-                    disabled={calculating || !selectedProductId}
-                    size="sm"
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    <Calculator className="h-3 w-3 mr-2" />
-                    {calculating ? 'Calculating...' : 'Calculate Premium'}
-                  </Button>
+                <div>
+                  <p className="text-sm font-medium text-blue-900">Selected Product</p>
+                  <p className="text-xs text-blue-700 mt-1">{selectedProduct?.name}</p>
+                  <p className="text-xs text-blue-600 mt-1">Base Premium: ₹{selectedProduct?.basePrice}</p>
                 </div>
 
-                {recommendedPremium && (
+                {(application.recommendedPremium || recommendedPremium) && (
                   <div className="pt-2 border-t border-blue-300">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-semibold text-blue-900">Recommended Premium</p>
                         <p className="text-xs text-blue-700">Based on risk assessment & coverage</p>
                       </div>
-                      <p className="text-2xl font-bold text-blue-900">₹{recommendedPremium}</p>
+                      <p className="text-2xl font-bold text-blue-900">₹{application.recommendedPremium || recommendedPremium}</p>
                     </div>
                   </div>
                 )}
