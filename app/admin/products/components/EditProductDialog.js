@@ -196,7 +196,7 @@ export default function EditProductDialog({ product, onSuccess, trigger, open: c
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+            <Button type="button" variant="outline" onClick={() => setOpen && setOpen(false)} disabled={loading}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading} className="bg-[#37322F] hover:bg-[#2a2521]">
