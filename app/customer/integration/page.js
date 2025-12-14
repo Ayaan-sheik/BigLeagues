@@ -289,6 +289,154 @@ print(f"Total Policies: {data['data']['summary']['totalPolicies']}")`}
           </div>
         </CardContent>
       </Card>
+
+      {/* Payment Tracking API */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Record Payment Transactions</CardTitle>
+          <CardDescription>Track payments with insurance premiums in real-time</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Post Payment */}
+            <div className="p-4 border rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-lg">Record a Payment</h4>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  POST
+                </Badge>
+              </div>
+              
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-sm font-medium">Endpoint</Label>
+                  <code className="block mt-1 p-2 bg-gray-100 rounded text-sm">
+                    POST {typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/payments
+                  </code>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Request Body</Label>
+                  <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm mt-2">
+{`{
+  "payment_id": "pay_123456789",
+  "order_id": "order_123456",
+  "service_name": "Premium Subscription",
+  "service_id": "service_001",
+  "base_amount": 1000,
+  "premium_amount": 50,
+  "total_amount": 1050,
+  "insurer_name": "Vantage",
+  "customer_email": "customer@example.com",
+  "customer_phone": "+919876543210"
+}`}
+                  </pre>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Example Request (JavaScript)</Label>
+                  <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm mt-2">
+{`const response = await fetch('${typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    payment_id: 'pay_' + Date.now(),
+    order_id: 'order_' + Date.now(),
+    service_name: 'Product Purchase',
+    base_amount: 1000,
+    premium_amount: 50,
+    total_amount: 1050,
+    customer_email: 'customer@example.com'
+  })
+});
+
+const data = await response.json();
+console.log(data);`}
+                  </pre>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Example Response</Label>
+                  <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm mt-2">
+{`{
+  "success": true,
+  "message": "Payment recorded successfully",
+  "data": {
+    "payment_id": "pay_123456789",
+    "order_id": "order_123456",
+    "service_name": "Premium Subscription",
+    "total_amount": 1050,
+    "premium_amount": 50,
+    "created_at": "2024-12-14T10:30:00.000Z"
+  }
+}`}
+                  </pre>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <h5 className="text-sm font-semibold text-blue-900 mb-1">Field Descriptions:</h5>
+                  <ul className="text-xs text-blue-800 space-y-1">
+                    <li>• <strong>payment_id</strong>: Unique payment identifier (required)</li>
+                    <li>• <strong>service_name</strong>: Name of the service/product (required)</li>
+                    <li>• <strong>total_amount</strong>: Total transaction amount (required)</li>
+                    <li>• <strong>base_amount</strong>: Base price without insurance</li>
+                    <li>• <strong>premium_amount</strong>: Insurance premium amount</li>
+                    <li>• <strong>order_id</strong>: Your order reference ID</li>
+                    <li>• <strong>service_id</strong>: Service/product identifier</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Python Example */}
+            <div className="p-4 border rounded-lg bg-gray-50">
+              <h4 className="font-semibold mb-2">Python Example</h4>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+{`import requests
+
+url = '${typeof window !== 'undefined' ? window.location.origin : ''}/api/v1/payments'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}
+payload = {
+    'payment_id': 'pay_123456',
+    'service_name': 'Premium Plan',
+    'base_amount': 1000,
+    'premium_amount': 50,
+    'total_amount': 1050,
+    'customer_email': 'customer@example.com'
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+
+if result['success']:
+    print(f"Payment recorded: {result['data']['payment_id']}")
+else:
+    print(f"Error: {result['message']}")`}
+              </pre>
+            </div>
+
+            {/* View Payments */}
+            <div className="p-4 border rounded-lg bg-green-50">
+              <h4 className="font-semibold text-green-900 mb-2">View Your Payment History</h4>
+              <p className="text-sm text-green-700 mb-3">
+                All recorded payments are available in your <strong>Payment Tracking</strong> page with detailed analytics and export options.
+              </p>
+              <a 
+                href="/customer/payments" 
+                className="inline-flex items-center text-sm font-medium text-green-700 hover:text-green-900 underline"
+              >
+                Go to Payment Tracking →
+              </a>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
