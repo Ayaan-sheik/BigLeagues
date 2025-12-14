@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Eye, Check, X, MessageCircle, Edit, Calculator, DollarSign } from 'lucide-react'
+import { Eye, Check, X, MessageCircle, Edit, DollarSign } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
