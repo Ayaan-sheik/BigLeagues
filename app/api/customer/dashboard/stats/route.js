@@ -69,13 +69,16 @@ export async function GET(request) {
       totalCoverage,
       premiumPaidMTD,
       activePolicies,
+      totalRevenue,
+      totalPayments: payments.length,
       riskScore: profile?.riskScore || 'A',
-      recentTransactions: transactions.map(t => ({
-        id: t.id,
-        productSold: t.productSold || 'Product',
-        saleAmount: t.saleAmount || 0,
-        premiumAmount: t.premiumAmount || 0,
-        date: t.date
+      recentTransactions: payments.map(p => ({
+        id: p.payment_id,
+        productSold: p.service_name || 'Service',
+        saleAmount: p.base_amount || 0,
+        premiumAmount: p.premium_amount || 0,
+        totalAmount: p.total_amount || 0,
+        date: p.created_at
       })),
       recentClaims: claims.map(c => ({
         id: c.id,
